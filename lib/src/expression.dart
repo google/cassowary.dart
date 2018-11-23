@@ -98,7 +98,7 @@ class Expression extends EquationMember {
   @override
   Expression operator +(EquationMember m) {
     if (m is ConstantMember)
-      return new Expression(new List<Term>.from(terms), constant + m.value);
+      {return new Expression(new List<Term>.from(terms), constant + m.value);}
 
     if (m is Param) {
       return new Expression(
@@ -108,7 +108,7 @@ class Expression extends EquationMember {
     }
 
     if (m is Term)
-      return new Expression(new List<Term>.from(terms)..add(m), constant);
+      {return new Expression(new List<Term>.from(terms)..add(m), constant);}
 
     if (m is Expression) {
       return new Expression(
@@ -123,7 +123,7 @@ class Expression extends EquationMember {
   @override
   Expression operator -(EquationMember m) {
     if (m is ConstantMember)
-      return new Expression(new List<Term>.from(terms), constant - m.value);
+      {return new Expression(new List<Term>.from(terms), constant - m.value);}
 
     if (m is Param) {
       return new Expression(
@@ -140,7 +140,7 @@ class Expression extends EquationMember {
     if (m is Expression) {
       List<Term> copiedTerms = new List<Term>.from(terms);
       for (Term t in m.terms)
-        copiedTerms.add(new Term(t.variable, -t.coefficient));
+        {copiedTerms.add(new Term(t.variable, -t.coefficient));}
       return new Expression(copiedTerms, constant - m.constant);
     }
     assert(false);
@@ -176,13 +176,13 @@ class Expression extends EquationMember {
     // expression to be linear
 
     if (!this.isConstant && !m.isConstant)
-      return null;
+      {return null;}
 
     if (this.isConstant)
-      return new _Multiplication(m.asExpression(), this.value);
+      {return new _Multiplication(m.asExpression(), this.value);}
 
     if (m.isConstant)
-      return new _Multiplication(this.asExpression(), m.value);
+      {return new _Multiplication(this.asExpression(), m.value);}
     assert(false);
     return null;
   }

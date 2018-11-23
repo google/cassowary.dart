@@ -6,7 +6,7 @@ import 'solver.dart';
 
 /// Return values used by methods on the cassowary [Solver].
 class Result {
-  const Result._(this.message, { bool isError: true }) : error = isError;
+  const Result._(this.message, { bool isError = true }) : error = isError;
 
   /// The human-readable string associated with this result.
   ///

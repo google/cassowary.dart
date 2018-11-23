@@ -29,7 +29,7 @@ class ParserException implements Exception {
   @override
   String toString() {
     if (message == null)
-      return 'Error while parsing constraint or expression';
+      {return 'Error while parsing constraint or expression';}
     return 'Error: "$message" while trying to parse constraint or expression';
   }
 }

@@ -73,7 +73,7 @@ class Constraint {
     buffer.write(' | priority = $priority');
 
     if (priority == Priority.required)
-      buffer.write(' (required)');
+      {buffer.write(' (required)');}
 
     return buffer.toString();
   }

@@ -176,7 +176,7 @@ class Solver {
   ///   the priority of the constraint and try again.
   Result addConstraint(Constraint constraint) {
     if (_constraints.containsKey(constraint))
-      return Result.duplicateConstraint;
+      {return Result.duplicateConstraint;}
 
     _Tag tag = new _Tag(new _Symbol(_SymbolType.invalid),
                         new _Symbol(_SymbolType.invalid));
@@ -195,7 +195,7 @@ class Solver {
 
     if (subject.type == _SymbolType.invalid) {
       if (!_addWithArtificialVariableOnRow(row))
-        return Result.unsatisfiableConstraint;
+        {return Result.unsatisfiableConstraint;}
     } else {
       row.solveForSymbol(subject);
       _substitute(subject, row);
@@ -243,7 +243,7 @@ class Solver {
   Result removeConstraint(Constraint constraint) {
     _Tag tag = _constraints[constraint];
     if (tag == null)
-      return Result.unknownConstraint;
+      {return Result.unknownConstraint;}
 
     tag = new _Tag.fromTag(tag);
     _constraints.remove(constraint);
@@ -321,10 +321,10 @@ class Solver {
   ///   other constraints at [Priority.required]) and check for duplicates.
   Result addEditVariable(Variable variable, double priority) {
     if (_edits.containsKey(variable))
-      return Result.duplicateEditVariable;
+      {return Result.duplicateEditVariable;}
 
     if (!_isValidNonRequiredPriority(priority))
-      return Result.badRequiredStrength;
+      {return Result.badRequiredStrength;}
 
     Constraint constraint = new Constraint(
       new Expression(<Term>[new Term(variable, 1.0)], 0.0),
@@ -378,7 +378,7 @@ class Solver {
   Result removeEditVariable(Variable variable) {
     _EditInfo info = _edits[variable];
     if (info == null)
-      return Result.unknownEditVariable;
+      {return Result.unknownEditVariable;}
 
     assert(removeConstraint(info.constraint) == Result.success);
 
@@ -416,7 +416,7 @@ class Solver {
   ///   was `Result.success`.
   Result suggestValueForVariable(Variable variable, double value) {
     if (!_edits.containsKey(variable))
-      return Result.unknownEditVariable;
+      {return Result.unknownEditVariable;}
 
     _suggestValueForEditInfoWithoutDualOptimization(_edits[variable], value);
 
@@ -445,7 +445,7 @@ class Solver {
       if (variable.applyUpdate(updatedValue) && variable.owner != null) {
         dynamic context = variable.owner.context;
         if (context != null)
-          updates.add(context);
+          {updates.add(context);}
       }
     }
 
@@ -474,7 +474,7 @@ class Solver {
 
     if (needsCleanup) {
       for (dynamic item in applied.reversed)
-        undoer(item);
+        {undoer(item);}
     }
 
     return result;
@@ -484,7 +484,7 @@ class Solver {
     _Symbol symbol = _vars[variable];
 
     if (symbol != null)
-      return symbol;
+      {return symbol;}
 
     symbol = new _Symbol(_SymbolType.external);
     _vars[variable] = symbol;
@@ -557,19 +557,19 @@ class Solver {
   _Symbol _chooseSubjectForRow(_Row row, _Tag tag) {
     for (_Symbol symbol in row.cells.keys) {
       if (symbol.type == _SymbolType.external)
-        return symbol;
+        {return symbol;}
     }
 
     if (tag.marker.type == _SymbolType.slack ||
         tag.marker.type == _SymbolType.error) {
       if (row.coefficientForSymbol(tag.marker) < 0.0)
-        return tag.marker;
+        {return tag.marker;}
     }
 
     if (tag.other.type == _SymbolType.slack ||
         tag.other.type == _SymbolType.error) {
       if (row.coefficientForSymbol(tag.other) < 0.0)
-        return tag.other;
+        {return tag.other;}
     }
 
     return new _Symbol(_SymbolType.invalid);
@@ -578,7 +578,7 @@ class Solver {
   bool _allDummiesInRow(_Row row) {
     for (_Symbol symbol in row.cells.keys) {
       if (symbol.type != _SymbolType.dummy)
-        return false;
+        {return false;}
     }
     return true;
   }
@@ -602,11 +602,11 @@ class Solver {
     if (foundRow != null) {
       _rows.remove(artificial);
       if (foundRow.cells.isEmpty)
-        return success;
+        {return success;}
 
       _Symbol entering = _anyPivotableSymbol(foundRow);
       if (entering.type == _SymbolType.invalid)
-        return false;
+        {return false;}
 
       foundRow.solveForSymbols(artificial, entering);
       _substitute(entering, foundRow);
@@ -614,7 +614,7 @@ class Solver {
     }
 
     for (_Row row in _rows.values)
-      row.removeSymbol(artificial);
+      {row.removeSymbol(artificial);}
     _objective.removeSymbol(artificial);
     return success;
   }
@@ -623,7 +623,7 @@ class Solver {
     while (true) {
       _Symbol entering = _enteringSymbolForObjectiveRow(objective);
       if (entering.type == _SymbolType.invalid)
-        return Result.success;
+        {return Result.success;}
 
       _Symbol leaving = _leavingSymbolForEnteringSymbol(entering);
       assert(leaving != null);
@@ -640,7 +640,7 @@ class Solver {
 
     for (_Symbol symbol in cells.keys) {
       if (symbol.type != _SymbolType.dummy && cells[symbol] < 0.0)
-        return symbol;
+        {return symbol;}
     }
 
     return new _Symbol(_SymbolType.invalid);
@@ -673,7 +673,7 @@ class Solver {
     });
     _objective.substitute(symbol, row);
     if (_artificial != null)
-      _artificial.substitute(symbol, row);
+      {_artificial.substitute(symbol, row);}
   }
 
   _Symbol _anyPivotableSymbol(_Row row) {
@@ -713,7 +713,7 @@ class Solver {
     _rows.forEach((_Symbol symbol, _Row row) {
       double c = row.coefficientForSymbol(marker);
       if (c == 0.0)
-        return;
+        {return;}
       if (symbol.type == _SymbolType.external) {
         third = symbol;
       } else if (c < 0.0) {

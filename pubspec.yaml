@@ -8,3 +8,5 @@ environment:
 dev_dependencies:
   test: ^1.5.1
   dart_coveralls: ^0.6.0+4
+  pedantic: '1.1.0'
+  matcher: ^0.12.4
