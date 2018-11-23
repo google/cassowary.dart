@@ -154,8 +154,8 @@ class Solver {
   ///   constraints at the same priority. Lower the priority of these
   ///   constraints and try again.
   Result addConstraints(List<Constraint> constraints) {
-    _SolverBulkUpdate applier = (Constraint c) => addConstraint(c);
-    _SolverBulkUpdate undoer = (Constraint c) => removeConstraint(c);
+    Result applier(c) => addConstraint(c);
+    Result undoer(c) => removeConstraint(c);
 
     return _bulkEdit(constraints, applier, undoer);
   }
@@ -223,8 +223,8 @@ class Solver {
   /// * [Result.unknownConstraint]: One or more constraints in the list were
   ///   not in the solver. So there was nothing to remove.
   Result removeConstraints(List<Constraint> constraints) {
-    _SolverBulkUpdate applier = (Constraint c) => removeConstraint(c);
-    _SolverBulkUpdate undoer = (Constraint c) => addConstraint(c);
+    Result applier(c) => removeConstraint(c);
+    Result undoer(c) => addConstraint(c);
 
     return _bulkEdit(constraints, applier, undoer);
   }
@@ -293,8 +293,8 @@ class Solver {
   ///   allows the solver to check for satisfiability of the constraint (w.r.t
   ///   other constraints at [Priority.required]) and check for duplicates.
   Result addEditVariables(List<Variable> variables, double priority) {
-    _SolverBulkUpdate applier = (Variable v) => addEditVariable(v, priority);
-    _SolverBulkUpdate undoer = (Variable v) => removeEditVariable(v);
+    Result applier(v) => addEditVariable(v, priority);
+    Result undoer(v) => removeEditVariable(v);
 
     return _bulkEdit(variables, applier, undoer);
   }
@@ -357,8 +357,8 @@ class Solver {
   /// * [Result.unknownEditVariable]: One of more edit variables were not
   ///   already present in the solver.
   Result removeEditVariables(List<Variable> variables) {
-    _SolverBulkUpdate applier = (Variable v) => removeEditVariable(v);
-    _SolverBulkUpdate undoer = (Variable v) =>
+    Result applier(v) => removeEditVariable(v);
+    Result undoer(v) =>
         addEditVariable(v, _edits[v].constraint.priority);
 
     return _bulkEdit(variables, applier, undoer);
@@ -647,7 +647,7 @@ class Solver {
   }
 
   _Symbol _leavingSymbolForEnteringSymbol(_Symbol entering) {
-    double ratio = double.MAX_FINITE;
+    double ratio = double.maxFinite;
     _Symbol result;
     _rows.forEach((_Symbol symbol, _Row row) {
       if (symbol.type != _SymbolType.external) {
@@ -705,8 +705,8 @@ class Solver {
   }
 
   _Symbol _leavingSymbolForMarkerSymbol(_Symbol marker) {
-    double r1 = double.MAX_FINITE;
-    double r2 = double.MAX_FINITE;
+    double r1 = double.maxFinite;
+    double r2 = double.maxFinite;
 
     _Symbol first, second, third;
 
@@ -795,7 +795,7 @@ class Solver {
   _Symbol _dualEnteringSymbolForRow(_Row row) {
     _Symbol entering;
 
-    double ratio = double.MAX_FINITE;
+    double ratio = double.maxFinite;
 
     Map<_Symbol, double> rowCells = row.cells;
 
