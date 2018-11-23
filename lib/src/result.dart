@@ -6,7 +6,7 @@ import 'solver.dart';
 
 /// Return values used by methods on the cassowary [Solver].
 class Result {
-  const Result._(this.message, { bool isError = true }) : error = isError;
+  const Result._(this.message, {bool isError = true}) : error = isError;
 
   /// The human-readable string associated with this result.
   ///
@@ -18,8 +18,7 @@ class Result {
   final bool error;
 
   /// The result when the operation was successful.
-  static const Result success =
-      const Result._('Success', isError: false);
+  static const Result success = const Result._('Success', isError: false);
 
   /// The result when the [Constraint] could not be added to the [Solver]
   /// because it was already present in the solver.
@@ -34,8 +33,7 @@ class Result {
 
   /// The result when the [Constraint] could not be removed from the solver
   /// because it was not present in the [Solver] to begin with.
-  static const Result unknownConstraint =
-      const Result._('Unknown constraint');
+  static const Result unknownConstraint = const Result._('Unknown constraint');
 
   /// The result when could not add the edit [Variable] to the [Solver] because
   /// it was already added to the [Solver] previously.

@@ -24,8 +24,8 @@ class Expression extends EquationMember {
   /// Creates a new linear [Expression] by copying the terms and constant of
   /// another expression.
   Expression.fromExpression(Expression expr)
-    : this.terms = new List<Term>.from(expr.terms),
-      this.constant = expr.constant;
+      : this.terms = new List<Term>.from(expr.terms),
+        this.constant = expr.constant;
 
   /// The list of terms in this linear expression. Terms in a an [Expression]
   /// must have only one [Variable] (indeterminate) and a degree of 1.
@@ -42,7 +42,8 @@ class Expression extends EquationMember {
   bool get isConstant => terms.isEmpty;
 
   @override
-  double get value => terms.fold(constant, (double value, Term term) => value + term.value);
+  double get value =>
+      terms.fold(constant, (double value, Term term) => value + term.value);
 
   @override
   Constraint operator >=(EquationMember value) {
@@ -59,11 +60,12 @@ class Expression extends EquationMember {
     return _createConstraint(value, Relation.equalTo);
   }
 
-  Constraint _createConstraint(EquationMember /* rhs */ value, Relation relation) {
+  Constraint _createConstraint(
+      EquationMember /* rhs */ value, Relation relation) {
     if (value is ConstantMember) {
       return new Constraint(
         new Expression(new List<Term>.from(terms), constant - value.value),
-        relation
+        relation,
       );
     }
 
@@ -84,11 +86,11 @@ class Expression extends EquationMember {
         new List<Term>.from(terms),
         (List<Term> list, Term t) {
           return list..add(new Term(t.variable, -t.coefficient));
-        }
+        },
       );
       return new Constraint(
         new Expression(newTerms, constant - value.constant),
-        relation
+        relation,
       );
     }
     assert(false);
@@ -97,23 +99,25 @@ class Expression extends EquationMember {
 
   @override
   Expression operator +(EquationMember m) {
-    if (m is ConstantMember)
-      {return new Expression(new List<Term>.from(terms), constant + m.value);}
+    if (m is ConstantMember) {
+      return new Expression(new List<Term>.from(terms), constant + m.value);
+    }
 
     if (m is Param) {
       return new Expression(
         new List<Term>.from(terms)..add(new Term(m.variable, 1.0)),
-        constant
+        constant,
       );
     }
 
-    if (m is Term)
-      {return new Expression(new List<Term>.from(terms)..add(m), constant);}
+    if (m is Term) {
+      return new Expression(new List<Term>.from(terms)..add(m), constant);
+    }
 
     if (m is Expression) {
       return new Expression(
         new List<Term>.from(terms)..addAll(m.terms),
-        constant + m.constant
+        constant + m.constant,
       );
     }
     assert(false);
@@ -122,25 +126,29 @@ class Expression extends EquationMember {
 
   @override
   Expression operator -(EquationMember m) {
-    if (m is ConstantMember)
-      {return new Expression(new List<Term>.from(terms), constant - m.value);}
+    if (m is ConstantMember) {
+      return new Expression(new List<Term>.from(terms), constant - m.value);
+    }
 
     if (m is Param) {
       return new Expression(
         new List<Term>.from(terms)..add(new Term(m.variable, -1.0)),
-        constant
+        constant,
       );
     }
 
     if (m is Term) {
-      return new Expression(new List<Term>.from(terms)
-        ..add(new Term(m.variable, -m.coefficient)), constant);
+      return new Expression(
+        new List<Term>.from(terms)..add(new Term(m.variable, -m.coefficient)),
+        constant,
+      );
     }
 
     if (m is Expression) {
       List<Term> copiedTerms = new List<Term>.from(terms);
-      for (Term t in m.terms)
-        {copiedTerms.add(new Term(t.variable, -t.coefficient));}
+      for (Term t in m.terms) {
+        copiedTerms.add(new Term(t.variable, -t.coefficient));
+      }
       return new Expression(copiedTerms, constant - m.constant);
     }
     assert(false);
@@ -154,7 +162,7 @@ class Expression extends EquationMember {
     if (args == null) {
       throw new ParserException(
         'Could not find constant multiplicand or multiplier',
-        <EquationMember>[this, m]
+        <EquationMember>[this, m],
       );
     }
 
@@ -164,8 +172,8 @@ class Expression extends EquationMember {
   @override
   Expression operator /(EquationMember m) {
     if (!m.isConstant) {
-      throw new ParserException(
-          'The divisor was not a constant expression', <EquationMember>[this, m]);
+      throw new ParserException('The divisor was not a constant expression',
+          <EquationMember>[this, m]);
     }
 
     return this._applyMultiplicand(1.0 / m.value);
@@ -175,14 +183,17 @@ class Expression extends EquationMember {
     // At least one of the the two members must be constant for the resulting
     // expression to be linear
 
-    if (!this.isConstant && !m.isConstant)
-      {return null;}
+    if (!this.isConstant && !m.isConstant) {
+      return null;
+    }
 
-    if (this.isConstant)
-      {return new _Multiplication(m.asExpression(), this.value);}
+    if (this.isConstant) {
+      return new _Multiplication(m.asExpression(), this.value);
+    }
 
-    if (m.isConstant)
-      {return new _Multiplication(this.asExpression(), m.value);}
+    if (m.isConstant) {
+      return new _Multiplication(this.asExpression(), m.value);
+    }
     assert(false);
     return null;
   }
@@ -192,7 +203,7 @@ class Expression extends EquationMember {
       new List<Term>(),
       (List<Term> list, Term term) {
         return list..add(new Term(term.variable, term.coefficient * m));
-      }
+      },
     );
     return new Expression(newTerms, constant * m);
   }

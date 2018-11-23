@@ -50,8 +50,8 @@ class Param extends EquationMember {
   /// Creates a new [Param] with the specified constant value that is tied
   /// to some object outside the solver.
   Param.withContext(dynamic context, [double value = 0.0])
-    : variable = new Variable(value),
-      context = context {
+      : variable = new Variable(value),
+        context = context {
     variable._owner = this;
   }
 
@@ -62,7 +62,8 @@ class Param extends EquationMember {
   dynamic context;
 
   @override
-  Expression asExpression() => new Expression(<Term>[new Term(variable, 1.0)], 0.0);
+  Expression asExpression() =>
+      new Expression(<Term>[new Term(variable, 1.0)], 0.0);
 
   @override
   bool get isConstant => false;
@@ -74,5 +75,7 @@ class Param extends EquationMember {
   String get name => variable.name;
 
   /// Set the name of the [Variable] associated with this [Param].
-  set name(String name) { variable.name = name; }
+  set name(String name) {
+    variable.name = name;
+  }
 }

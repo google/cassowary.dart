@@ -11,7 +11,7 @@ import 'result.dart';
 import 'param.dart';
 import 'term.dart';
 
-enum _SymbolType { invalid, external, slack, error, dummy, }
+enum _SymbolType { invalid, external, slack, error, dummy }
 
 class _Symbol {
   _Symbol(this.type);
@@ -70,7 +70,8 @@ class _Row {
 
   void insertRow(_Row other, [double coefficient = 1.0]) {
     constant += other.constant * coefficient;
-    other.cells.forEach((_Symbol s, double v) => insertSymbol(s, v * coefficient));
+    other.cells
+        .forEach((_Symbol s, double v) => insertSymbol(s, v * coefficient));
   }
 
   void removeSymbol(_Symbol symbol) {
@@ -175,11 +176,14 @@ class Solver {
   ///   another constraint at that priority already in the solver. Try lowering
   ///   the priority of the constraint and try again.
   Result addConstraint(Constraint constraint) {
-    if (_constraints.containsKey(constraint))
-      {return Result.duplicateConstraint;}
+    if (_constraints.containsKey(constraint)) {
+      return Result.duplicateConstraint;
+    }
 
-    _Tag tag = new _Tag(new _Symbol(_SymbolType.invalid),
-                        new _Symbol(_SymbolType.invalid));
+    _Tag tag = new _Tag(
+      new _Symbol(_SymbolType.invalid),
+      new _Symbol(_SymbolType.invalid),
+    );
 
     _Row row = _createRow(constraint, tag);
 
@@ -194,8 +198,9 @@ class Solver {
     }
 
     if (subject.type == _SymbolType.invalid) {
-      if (!_addWithArtificialVariableOnRow(row))
-        {return Result.unsatisfiableConstraint;}
+      if (!_addWithArtificialVariableOnRow(row)) {
+        return Result.unsatisfiableConstraint;
+      }
     } else {
       row.solveForSymbol(subject);
       _substitute(subject, row);
@@ -242,8 +247,9 @@ class Solver {
   ///   there was nothing to remove.
   Result removeConstraint(Constraint constraint) {
     _Tag tag = _constraints[constraint];
-    if (tag == null)
-      {return Result.unknownConstraint;}
+    if (tag == null) {
+      return Result.unknownConstraint;
+    }
 
     tag = new _Tag.fromTag(tag);
     _constraints.remove(constraint);
@@ -320,15 +326,17 @@ class Solver {
   ///   allows the solver to check for satisfiability of the constraint (w.r.t
   ///   other constraints at [Priority.required]) and check for duplicates.
   Result addEditVariable(Variable variable, double priority) {
-    if (_edits.containsKey(variable))
-      {return Result.duplicateEditVariable;}
+    if (_edits.containsKey(variable)) {
+      return Result.duplicateEditVariable;
+    }
 
-    if (!_isValidNonRequiredPriority(priority))
-      {return Result.badRequiredStrength;}
+    if (!_isValidNonRequiredPriority(priority)) {
+      return Result.badRequiredStrength;
+    }
 
     Constraint constraint = new Constraint(
       new Expression(<Term>[new Term(variable, 1.0)], 0.0),
-      Relation.equalTo
+      Relation.equalTo,
     );
     constraint.priority = priority;
 
@@ -358,8 +366,7 @@ class Solver {
   ///   already present in the solver.
   Result removeEditVariables(List<Variable> variables) {
     Result applier(v) => removeEditVariable(v);
-    Result undoer(v) =>
-        addEditVariable(v, _edits[v].constraint.priority);
+    Result undoer(v) => addEditVariable(v, _edits[v].constraint.priority);
 
     return _bulkEdit(variables, applier, undoer);
   }
@@ -377,8 +384,9 @@ class Solver {
   ///   solver. There was nothing to remove.
   Result removeEditVariable(Variable variable) {
     _EditInfo info = _edits[variable];
-    if (info == null)
-      {return Result.unknownEditVariable;}
+    if (info == null) {
+      return Result.unknownEditVariable;
+    }
 
     assert(removeConstraint(info.constraint) == Result.success);
 
@@ -415,8 +423,9 @@ class Solver {
   ///   already added the variable to the [Solver], make sure the [Result]
   ///   was `Result.success`.
   Result suggestValueForVariable(Variable variable, double value) {
-    if (!_edits.containsKey(variable))
-      {return Result.unknownEditVariable;}
+    if (!_edits.containsKey(variable)) {
+      return Result.unknownEditVariable;
+    }
 
     _suggestValueForEditInfoWithoutDualOptimization(_edits[variable], value);
 
@@ -444,8 +453,9 @@ class Solver {
 
       if (variable.applyUpdate(updatedValue) && variable.owner != null) {
         dynamic context = variable.owner.context;
-        if (context != null)
-          {updates.add(context);}
+        if (context != null) {
+          updates.add(context);
+        }
       }
     }
 
@@ -455,7 +465,7 @@ class Solver {
   Result _bulkEdit(
     Iterable<dynamic> items,
     _SolverBulkUpdate applier,
-    _SolverBulkUpdate undoer
+    _SolverBulkUpdate undoer,
   ) {
     List<dynamic> applied = <dynamic>[];
     bool needsCleanup = false;
@@ -473,8 +483,9 @@ class Solver {
     }
 
     if (needsCleanup) {
-      for (dynamic item in applied.reversed)
-        {undoer(item);}
+      for (dynamic item in applied.reversed) {
+        undoer(item);
+      }
     }
 
     return result;
@@ -483,8 +494,9 @@ class Solver {
   _Symbol _symbolForVariable(Variable variable) {
     _Symbol symbol = _vars[variable];
 
-    if (symbol != null)
-      {return symbol;}
+    if (symbol != null) {
+      return symbol;
+    }
 
     symbol = new _Symbol(_SymbolType.external);
     _vars[variable] = symbol;
@@ -556,20 +568,23 @@ class Solver {
 
   _Symbol _chooseSubjectForRow(_Row row, _Tag tag) {
     for (_Symbol symbol in row.cells.keys) {
-      if (symbol.type == _SymbolType.external)
-        {return symbol;}
+      if (symbol.type == _SymbolType.external) {
+        return symbol;
+      }
     }
 
     if (tag.marker.type == _SymbolType.slack ||
         tag.marker.type == _SymbolType.error) {
-      if (row.coefficientForSymbol(tag.marker) < 0.0)
-        {return tag.marker;}
+      if (row.coefficientForSymbol(tag.marker) < 0.0) {
+        return tag.marker;
+      }
     }
 
     if (tag.other.type == _SymbolType.slack ||
         tag.other.type == _SymbolType.error) {
-      if (row.coefficientForSymbol(tag.other) < 0.0)
-        {return tag.other;}
+      if (row.coefficientForSymbol(tag.other) < 0.0) {
+        return tag.other;
+      }
     }
 
     return new _Symbol(_SymbolType.invalid);
@@ -577,8 +592,9 @@ class Solver {
 
   bool _allDummiesInRow(_Row row) {
     for (_Symbol symbol in row.cells.keys) {
-      if (symbol.type != _SymbolType.dummy)
-        {return false;}
+      if (symbol.type != _SymbolType.dummy) {
+        return false;
+      }
     }
     return true;
   }
@@ -601,20 +617,23 @@ class Solver {
     _Row foundRow = _rows[artificial];
     if (foundRow != null) {
       _rows.remove(artificial);
-      if (foundRow.cells.isEmpty)
-        {return success;}
+      if (foundRow.cells.isEmpty) {
+        return success;
+      }
 
       _Symbol entering = _anyPivotableSymbol(foundRow);
-      if (entering.type == _SymbolType.invalid)
-        {return false;}
+      if (entering.type == _SymbolType.invalid) {
+        return false;
+      }
 
       foundRow.solveForSymbols(artificial, entering);
       _substitute(entering, foundRow);
       _rows[entering] = foundRow;
     }
 
-    for (_Row row in _rows.values)
-      {row.removeSymbol(artificial);}
+    for (_Row row in _rows.values) {
+      row.removeSymbol(artificial);
+    }
     _objective.removeSymbol(artificial);
     return success;
   }
@@ -622,8 +641,9 @@ class Solver {
   Result _optimizeObjectiveRow(_Row objective) {
     while (true) {
       _Symbol entering = _enteringSymbolForObjectiveRow(objective);
-      if (entering.type == _SymbolType.invalid)
-        {return Result.success;}
+      if (entering.type == _SymbolType.invalid) {
+        return Result.success;
+      }
 
       _Symbol leaving = _leavingSymbolForEnteringSymbol(entering);
       assert(leaving != null);
@@ -639,8 +659,9 @@ class Solver {
     Map<_Symbol, double> cells = objective.cells;
 
     for (_Symbol symbol in cells.keys) {
-      if (symbol.type != _SymbolType.dummy && cells[symbol] < 0.0)
-        {return symbol;}
+      if (symbol.type != _SymbolType.dummy && cells[symbol] < 0.0) {
+        return symbol;
+      }
     }
 
     return new _Symbol(_SymbolType.invalid);
@@ -672,8 +693,9 @@ class Solver {
       }
     });
     _objective.substitute(symbol, row);
-    if (_artificial != null)
-      {_artificial.substitute(symbol, row);}
+    if (_artificial != null) {
+      _artificial.substitute(symbol, row);
+    }
   }
 
   _Symbol _anyPivotableSymbol(_Row row) {
@@ -712,8 +734,9 @@ class Solver {
 
     _rows.forEach((_Symbol symbol, _Row row) {
       double c = row.coefficientForSymbol(marker);
-      if (c == 0.0)
-        {return;}
+      if (c == 0.0) {
+        return;
+      }
       if (symbol.type == _SymbolType.external) {
         third = symbol;
       } else if (c < 0.0) {

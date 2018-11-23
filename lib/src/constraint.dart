@@ -14,9 +14,11 @@ enum Relation {
   /// The relationship between the left and right hand sides of the expression
   /// is `==`, (lhs == rhs).
   equalTo,
+
   /// The relationship between the left and right hand sides of the expression
   /// is `<=`, (lhs <= rhs).
   lessThanOrEqualTo,
+
   /// The relationship between the left and right hand sides of the expression
   /// is `>=`, (lhs => rhs).
   greaterThanOrEqualTo,
@@ -72,8 +74,9 @@ class Constraint {
 
     buffer.write(' | priority = $priority');
 
-    if (priority == Priority.required)
-      {buffer.write(' (required)');}
+    if (priority == Priority.required) {
+      buffer.write(' (required)');
+    }
 
     return buffer.toString();
   }
