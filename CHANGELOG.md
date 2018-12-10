@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- Republishing as a standalone package
+- Upgraded implementation to Dart 2
+
 ## 0.1.7
 
 - Minor API updates to address code review concerns
