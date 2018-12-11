@@ -1,8 +1,8 @@
 name: cassowary
-version: 0.3.0
-description: Cassowary Constraint Solving Toolkit
+version: 0.3.0+1
+description: An implementation of the Cassowary constraint solving algorithm in Dart.
 author: Chromium Authors <flutter-dev@googlegroups.com>
-homepage: https://github.com/flutter/cassowary
+homepage: https://github.com/google/cassowary.dart/
 environment:
   sdk: '>=2.0.0 <3.0.0'
 dev_dependencies:
