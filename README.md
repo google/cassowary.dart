@@ -1,6 +1,7 @@
 Cassowary in Dart
 =================
 
+[![Pub](https://img.shields.io/pub/v/cassowary.svg?style=flat-square)](https://pub.dartlang.org/packages/cassowary)
 [![Build Status](https://travis-ci.org/flutter/cassowary.svg?branch=master)](https://travis-ci.org/flutter/cassowary)
 [![Coverage Status](https://coveralls.io/repos/github/flutter/cassowary/badge.svg?branch=master)](https://coveralls.io/github/flutter/cassowary?branch=master)
 

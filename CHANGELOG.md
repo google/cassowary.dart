@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0+1
+
+- Fix package homepage and description in pubspec.yaml.
+
 ## 0.3.0
 
 - Republishing as a standalone package
