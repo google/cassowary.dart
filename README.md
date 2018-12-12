@@ -24,7 +24,7 @@ Each expression in turn is made up of a list of `Term`s and a constant. The term
 Once the user obtains specific parameter objects, it is straightforward to create constraints. The following example sets up constraints that specify that the width of the element must be at least 100 units. It is assumed that the `left` and `right` `Param` objects have been obtained from the view in question.
 
 ```
-Constraint widthAtLeast100 = right - left >= CM(100.0)
+var widthAtLeast100 = right - left >= cm(100.0);
 ```
 
 Lets go over this one step at a time: The expression `right - left` creates an instance of an `Expression` object. The expression consists of two terms. The `right` and `left` params wrap variables. The coefficients are 1.0 and -1.0 respectively and the constant -100.0. Constants need to be decorated with `CM` to aid with the operator overloading mechanism in Dart.
@@ -32,20 +32,24 @@ Lets go over this one step at a time: The expression `right - left` creates an i
 All variables are unrestricted. So there is nothing preventing the solver from making the left and right edges negative. We can specify our preference against this by specifying another constraint like so:
 
 ```
-Constraint edgesPositive = (left >= CM(0.0))
+var edgesPositive = (left >= cm(0.0));
 ```
 
 When we construct these constraints for the solver, they are created at the default `Priority.required`. This means that the solver will resist adding constraints where there are ambiguities between two required constraints. To specify a weaker priority, you can use the `priority` setter or use the `|` symbol with the priority while constructing the constraint. Like so:
 
 ```
-Constraint edgesPositive = (left >= CM(0.0) | Priority.weak)
+var edgesPositive = (left >= cm(0.0))..priority = Priority.weak;
 ```
 
 Once the set of constraints are constructed, they are added to the solver and the results of the solution flushed out.
 
 ```
-solver.addConstraints([widthAtLeast100, edgesPositive])
-     ..flushVariableUpdates();
+solver
+    ..addConstraints([
+      widthAtLeast100,
+      edgesPositive,
+    ])
+    ..flushUpdates();
 ```
 
 # Edit Constraints
@@ -55,13 +59,13 @@ When updates need to be applied to parameters that are a part of the solver, edi
 We create a parameter that we will use to represent the mouse coordinate.
 
 ```
-Param mid = new Param(coordinate);
+var mid = new Variable(coordinate);
 ```
 
 Then, we add a constraint that expresses the midpoint in terms of the parameters we already have.
 
 ```
-solver.addConstraint(left + right == mid * CM(2.0));
+solver.addConstraint((left + right).equals(Term(mid, 1.0) * cm(2.0)));
 ```
 
 Then, we specify that we intend to edit the midpoint. As we get updates, we tell the solver to satisfy all other constraints (admittedly our example is trivial).
@@ -73,5 +77,5 @@ solver.addEditVariable(mid, Priority.strong);
 and finally
 
 ```
-solver.flushVariableUpdates();
+solver.flushUpdates();
 ```
