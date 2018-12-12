@@ -45,10 +45,7 @@ Once the set of constraints are constructed, they are added to the solver and th
 
 ```
 solver
-    ..addConstraints([
-      widthAtLeast100,
-      edgesPositive,
-    ])
+    ..addConstraints([widthAtLeast100, edgesPositive])
     ..flushUpdates();
 ```
 

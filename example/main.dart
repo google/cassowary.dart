@@ -11,10 +11,7 @@ void main() {
   var widthAtLeast100 = right - left >= cm(100.0);
   var edgesPositive = (left >= cm(0.0))..priority = Priority.weak;
   solver
-    ..addConstraints([
-      widthAtLeast100,
-      edgesPositive,
-    ])
+    ..addConstraints([widthAtLeast100, edgesPositive])
     ..flushUpdates();
 
   print('left: ${left.value}, right: ${right.value}');
