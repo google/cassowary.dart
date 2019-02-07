@@ -9,34 +9,34 @@ import 'package:matcher/matcher.dart';
 
 void main() {
   test('variable', () {
-    Param v = new Param(22.0);
+    final v = Param(22.0);
     expect(v.value, 22);
   });
 
   test('variable1', () {
-    Param v = new Param(22.0);
+    final v = Param(22.0);
     expect((v + cm(22.0)).value, 44.0);
     expect((v - cm(20.0)).value, 2.0);
   });
 
   test('term', () {
-    Term t = new Term(new Variable(22.0), 2.0);
+    final t = Term(Variable(22.0), 2.0);
     expect(t.value, 44);
   });
 
   test('expression', () {
-    List<Term> terms = <Term>[
-      new Term(new Variable(22.0), 2.0),
-      new Term(new Variable(1.0), 1.0),
+    final terms = <Term>[
+      Term(Variable(22.0), 2.0),
+      Term(Variable(1.0), 1.0),
     ];
-    Expression e = new Expression(terms, 40.0);
+    final e = Expression(terms, 40.0);
     expect(e.value, 85.0);
   });
 
   test('expression1', () {
-    Param v1 = new Param(10.0);
-    Param v2 = new Param(10.0);
-    Param v3 = new Param(22.0);
+    final v1 = Param(10.0);
+    final v2 = Param(10.0);
+    final v3 = Param(22.0);
 
     expect(v1 is Param, true);
     expect(v1 + cm(20.0) is Expression, true);
@@ -50,7 +50,7 @@ void main() {
   });
 
   test('expression2', () {
-    Expression e = new Param(10.0) + cm(5.0);
+    final e = Param(10.0) + cm(5.0);
     expect(e.value, 15.0);
     expect(e is Expression, true);
 
@@ -63,7 +63,7 @@ void main() {
     expect(e.value, 15.0);
 
     // Param
-    Param v = new Param(2.0);
+    final v = Param(2.0);
     expect((e + v) is Expression, true);
     expect((e + v).value, 17.0);
     expect((e - v) is Expression, true);
@@ -72,7 +72,7 @@ void main() {
     expect(e.value, 15.0);
 
     // Term
-    Term t = new Term(v.variable, 2.0);
+    final t = Term(v.variable, 2.0);
     expect((e + t) is Expression, true);
     expect((e + t).value, 19.0);
     expect((e - t) is Expression, true);
@@ -81,7 +81,7 @@ void main() {
     expect(e.value, 15.0);
 
     // Expression
-    Expression e2 = new Param(7.0) + new Param(3.0);
+    final e2 = Param(7.0) + Param(3.0);
     expect((e + e2) is Expression, true);
     expect((e + e2).value, 25.0);
     expect((e - e2) is Expression, true);
@@ -91,31 +91,31 @@ void main() {
   });
 
   test('term2', () {
-    Term t = new Term(new Variable(12.0), 1.0);
+    final t = Term(Variable(12.0), 1.0);
 
     // Constant
-    ConstantMember c = cm(2.0);
+    final c = cm(2.0);
     expect((t + c) is Expression, true);
     expect((t + c).value, 14.0);
     expect((t - c) is Expression, true);
     expect((t - c).value, 10.0);
 
     // Variable
-    Param v = new Param(2.0);
+    final v = Param(2.0);
     expect((t + v) is Expression, true);
     expect((t + v).value, 14.0);
     expect((t - v) is Expression, true);
     expect((t - v).value, 10.0);
 
     // Term
-    Term t2 = new Term(new Variable(1.0), 2.0);
+    final t2 = Term(Variable(1.0), 2.0);
     expect((t + t2) is Expression, true);
     expect((t + t2).value, 14.0);
     expect((t - t2) is Expression, true);
     expect((t - t2).value, 10.0);
 
     // Expression
-    Expression exp = new Param(1.0) + cm(1.0);
+    final exp = Param(1.0) + cm(1.0);
     expect((t + exp) is Expression, true);
     expect((t + exp).value, 14.0);
     expect((t - exp) is Expression, true);
@@ -123,31 +123,31 @@ void main() {
   });
 
   test('variable3', () {
-    Param v = new Param(3.0);
+    final v = Param(3.0);
 
     // Constant
-    ConstantMember c = cm(2.0);
+    final c = cm(2.0);
     expect((v + c) is Expression, true);
     expect((v + c).value, 5.0);
     expect((v - c) is Expression, true);
     expect((v - c).value, 1.0);
 
     // Variable
-    Param v2 = new Param(2.0);
+    final v2 = Param(2.0);
     expect((v + v2) is Expression, true);
     expect((v + v2).value, 5.0);
     expect((v - v2) is Expression, true);
     expect((v - v2).value, 1.0);
 
     // Term
-    Term t2 = new Term(new Variable(1.0), 2.0);
+    final t2 = Term(Variable(1.0), 2.0);
     expect((v + t2) is Expression, true);
     expect((v + t2).value, 5.0);
     expect((v - t2) is Expression, true);
     expect((v - t2).value, 1.0);
 
     // Expression
-    Expression exp = new Param(1.0) + cm(1.0);
+    final exp = Param(1.0) + cm(1.0);
     expect(exp.terms.length, 1);
 
     expect((v + exp) is Expression, true);
@@ -157,31 +157,31 @@ void main() {
   });
 
   test('constantmember', () {
-    ConstantMember c = cm(3.0);
+    final c = cm(3.0);
 
     // Constant
-    ConstantMember c2 = cm(2.0);
+    final c2 = cm(2.0);
     expect((c + c2) is Expression, true);
     expect((c + c2).value, 5.0);
     expect((c - c2) is Expression, true);
     expect((c - c2).value, 1.0);
 
     // Variable
-    Param v2 = new Param(2.0);
+    final v2 = Param(2.0);
     expect((c + v2) is Expression, true);
     expect((c + v2).value, 5.0);
     expect((c - v2) is Expression, true);
     expect((c - v2).value, 1.0);
 
     // Term
-    Term t2 = new Term(new Variable(1.0), 2.0);
+    final t2 = Term(Variable(1.0), 2.0);
     expect((c + t2) is Expression, true);
     expect((c + t2).value, 5.0);
     expect((c - t2) is Expression, true);
     expect((c - t2).value, 1.0);
 
     // Expression
-    Expression exp = new Param(1.0) + cm(1.0);
+    final exp = Param(1.0) + cm(1.0);
 
     expect((c + exp) is Expression, true);
     expect((c + exp).value, 5.0);
@@ -190,74 +190,74 @@ void main() {
   });
 
   test('constraint2', () {
-    Param left = new Param(10.0);
-    Param right = new Param(100.0);
+    final left = Param(10.0);
+    final right = Param(100.0);
 
-    Constraint c = right - left >= cm(25.0);
+    final c = right - left >= cm(25.0);
     expect(c is Constraint, true);
   });
 
   test('simple_multiplication', () {
     // Constant
-    ConstantMember c = cm(20.0);
+    final c = cm(20.0);
     expect((c * cm(2.0)).value, 40.0);
 
     // Variable
-    Param v = new Param(20.0);
+    final v = Param(20.0);
     expect((v * cm(2.0)).value, 40.0);
 
     // Term
-    Term t = new Term(v.variable, 1.0);
+    final t = Term(v.variable, 1.0);
     expect((t * cm(2.0)).value, 40.0);
 
     // Expression
-    Expression e = new Expression(<Term>[t], 0.0);
+    final e = Expression(<Term>[t], 0.0);
     expect((e * cm(2.0)).value, 40.0);
   });
 
   test('simple_division', () {
     // Constant
-    ConstantMember c = cm(20.0);
+    final c = cm(20.0);
     expect((c / cm(2.0)).value, 10.0);
 
     // Variable
-    Param v = new Param(20.0);
+    final v = Param(20.0);
     expect((v / cm(2.0)).value, 10.0);
 
     // Term
-    Term t = new Term(v.variable, 1.0);
+    final t = Term(v.variable, 1.0);
     expect((t / cm(2.0)).value, 10.0);
 
     // Expression
-    Expression e = new Expression(<Term>[t], 0.0);
+    final e = Expression(<Term>[t], 0.0);
     expect((e / cm(2.0)).value, 10.0);
   });
 
   test('full_constraints_setup', () {
-    Param left = new Param(2.0);
-    Param right = new Param(10.0);
+    final left = Param(2.0);
+    final right = Param(10.0);
 
-    Constraint c1 = right - left >= cm(20.0);
+    final c1 = right - left >= cm(20.0);
     expect(c1 is Constraint, true);
     expect(c1.expression.constant, -20.0);
     expect(c1.relation, Relation.greaterThanOrEqualTo);
 
-    Constraint c2 = (right - left).equals(cm(30.0));
+    final c2 = (right - left).equals(cm(30.0));
     expect(c2 is Constraint, true);
     expect(c2.expression.constant, -30.0);
     expect(c2.relation, Relation.equalTo);
 
-    Constraint c3 = right - left <= cm(30.0);
+    final c3 = right - left <= cm(30.0);
     expect(c3 is Constraint, true);
     expect(c3.expression.constant, -30.0);
     expect(c3.relation, Relation.lessThanOrEqualTo);
   });
 
   test('constraint_strength_update', () {
-    Param left = new Param(2.0);
-    Param right = new Param(10.0);
+    final left = Param(2.0);
+    final right = Param(10.0);
 
-    Constraint c = (right - left >= cm(200.0)) | 750.0;
+    final c = (right - left >= cm(200.0)) | 750.0;
     expect(c is Constraint, true);
     expect(c.expression.terms.length, 2);
     expect(c.expression.constant, -200.0);
@@ -265,12 +265,12 @@ void main() {
   });
 
   test('solver', () {
-    Solver s = new Solver();
+    final s = Solver();
 
-    Param left = new Param(2.0);
-    Param right = new Param(100.0);
+    final left = Param(2.0);
+    final right = Param(100.0);
 
-    Constraint c1 = right - left >= cm(200.0);
+    final c1 = right - left >= cm(200.0);
 
     expect((right >= left) is Constraint, true);
 
@@ -278,28 +278,28 @@ void main() {
   });
 
   test('constraint_complex', () {
-    Expression e = new Param(200.0) - new Param(100.0);
+    final e = Param(200.0) - Param(100.0);
 
     // Constant
-    Constraint c1 = e >= cm(50.0);
+    final c1 = e >= cm(50.0);
     expect(c1 is Constraint, true);
     expect(c1.expression.terms.length, 2);
     expect(c1.expression.constant, -50.0);
 
     // Variable
-    Constraint c2 = e >= new Param(2.0);
+    final c2 = e >= Param(2.0);
     expect(c2 is Constraint, true);
     expect(c2.expression.terms.length, 3);
     expect(c2.expression.constant, 0.0);
 
     // Term
-    Constraint c3 = e >= new Term(new Variable(2.0), 1.0);
+    final c3 = e >= Term(Variable(2.0), 1.0);
     expect(c3 is Constraint, true);
     expect(c3.expression.terms.length, 3);
     expect(c3.expression.constant, 0.0);
 
     // Expression
-    Constraint c4 = e >= new Expression(<Term>[new Term(new Variable(2.0), 1.0)], 20.0);
+    final c4 = e >= Expression(<Term>[Term(Variable(2.0), 1.0)], 20.0);
     expect(c4 is Constraint, true);
     expect(c4.expression.terms.length, 3);
     expect(c4.expression.constant, -20.0);
@@ -307,40 +307,40 @@ void main() {
 
   test('constraint_complex_non_exprs', () {
     // Constant
-    Constraint c1 = cm(100.0) >= cm(50.0);
+    final c1 = cm(100.0) >= cm(50.0);
     expect(c1 is Constraint, true);
     expect(c1.expression.terms.length, 0);
     expect(c1.expression.constant, 50.0);
 
     // Variable
-    Constraint c2 = new Param(100.0) >= new Param(2.0);
+    final c2 = Param(100.0) >= Param(2.0);
     expect(c2 is Constraint, true);
     expect(c2.expression.terms.length, 2);
     expect(c2.expression.constant, 0.0);
 
     // Term
-    Term t = new Term(new Variable(100.0), 1.0);
-    Constraint c3 = t >= new Term(new Variable(2.0), 1.0);
+    final t = Term(Variable(100.0), 1.0);
+    final c3 = t >= Term(Variable(2.0), 1.0);
     expect(c3 is Constraint, true);
     expect(c3.expression.terms.length, 2);
     expect(c3.expression.constant, 0.0);
 
     // Expression
-    Expression e = new Expression(<Term>[t], 0.0);
-    Constraint c4 = e >= new Expression(<Term>[new Term(new Variable(2.0), 1.0)], 20.0);
+    final e = Expression(<Term>[t], 0.0);
+    final c4 = e >= Expression(<Term>[Term(Variable(2.0), 1.0)], 20.0);
     expect(c4 is Constraint, true);
     expect(c4.expression.terms.length, 2);
     expect(c4.expression.constant, -20.0);
   });
 
   test('constraint_update_in_solver', () {
-    Solver s = new Solver();
+    final s = Solver();
 
-    Param left = new Param(2.0);
-    Param right = new Param(100.0);
+    final left = Param(2.0);
+    final right = Param(100.0);
 
-    Constraint c1 = right - left >= cm(200.0);
-    Constraint c2 = right >= right;
+    final c1 = right - left >= cm(200.0);
+    final c2 = right >= right;
 
     expect(s.addConstraint(c1), Result.success);
     expect(s.addConstraint(c1), Result.duplicateConstraint);
@@ -350,10 +350,10 @@ void main() {
   });
 
   test('test_multiplication_division_override', () {
-    ConstantMember c = cm(10.0);
-    Param v = new Param(c.value);
-    Term t = new Term(v.variable, 1.0);
-    Expression e = new Expression(<Term>[t], 0.0);
+    final c = cm(10.0);
+    final v = Param(c.value);
+    final t = Term(v.variable, 1.0);
+    final e = Expression(<Term>[t], 0.0);
 
     // Constant
     expect((c * cm(10.0)).value, 100);
@@ -381,10 +381,10 @@ void main() {
   });
 
   test('test_multiplication_division_exceptions', () {
-    ConstantMember c = cm(10.0);
-    Param v = new Param(c.value);
-    Term t = new Term(v.variable, 1.0);
-    Expression e = new Expression(<Term>[t], 0.0);
+    final c = cm(10.0);
+    final v = Param(c.value);
+    final t = Term(v.variable, 1.0);
+    final e = Expression(<Term>[t], 0.0);
 
     expect((c * c).value, 100);
     expect(() => v * v, throwsA(const TypeMatcher<ParserException>()));
@@ -398,13 +398,13 @@ void main() {
   });
 
   test('edit_updates', () {
-    Solver s = new Solver();
+    final s = Solver();
 
-    Param left = new Param(0.0);
-    Param right = new Param(100.0);
-    Param mid = new Param(0.0);
+    final left = Param(0.0);
+    final right = Param(100.0);
+    final mid = Param(0.0);
 
-    Constraint c = left + right >= cm(2.0) * mid;
+    final c = left + right >= cm(2.0) * mid;
     expect(s.addConstraint(c), Result.success);
 
     expect(s.addEditVariable(mid.variable, 999.0), Result.success);
@@ -415,30 +415,30 @@ void main() {
   });
 
   test('bug1', () {
-    Param left = new Param(0.0);
-    Param right = new Param(100.0);
-    Param mid = new Param(0.0);
+    final left = Param(0.0);
+    final right = Param(100.0);
+    final mid = Param(0.0);
 
     expect(((left + right) >= (cm(2.0) * mid)) is Constraint, true);
   });
 
   test('single_item', () {
-    Param left = new Param(-20.0);
-    Solver s = new Solver();
-    s.addConstraint(left >= cm(0.0));
-    s.flushUpdates();
+    final left = Param(-20.0);
+    Solver()
+      ..addConstraint(left >= cm(0.0))
+      ..flushUpdates();
     expect(left.value, 0.0);
   });
 
   test('midpoints', () {
-    Param left = new Param(0.0)..name = "left";
-    Param right = new Param(0.0)..name = "right";
-    Param mid = new Param(0.0)..name = "mid";
+    final left = Param(0.0)..name = 'left';
+    final right = Param(0.0)..name = 'right';
+    final mid = Param(0.0)..name = 'mid';
 
-    Solver s = new Solver();
+    final s = Solver();
 
-    expect(s.addConstraint((right + left).equals(mid * cm(2.0))),
-        Result.success);
+    expect(
+        s.addConstraint((right + left).equals(mid * cm(2.0))), Result.success);
     expect(s.addConstraint(right - left >= cm(100.0)), Result.success);
     expect(s.addConstraint(left >= cm(0.0)), Result.success);
 
@@ -450,33 +450,35 @@ void main() {
   });
 
   test('addition_of_multiple', () {
-    Param left = new Param(0.0);
-    Param right = new Param(0.0);
-    Param mid = new Param(0.0);
+    final left = Param(0.0);
+    final right = Param(0.0);
+    final mid = Param(0.0);
 
-    Solver s = new Solver();
+    final s = Solver();
 
-    Constraint c = (left >= cm(0.0));
+    final c = (left >= cm(0.0));
 
-    expect(s.addConstraints(<Constraint>[
-      (left + right).equals(cm(2.0) * mid),
-      (right - left >= cm(100.0)),
-      c
-    ]), Result.success);
+    expect(
+        s.addConstraints(<Constraint>[
+          (left + right).equals(cm(2.0) * mid),
+          (right - left >= cm(100.0)),
+          c
+        ]),
+        Result.success);
 
     expect(s.addConstraints(<Constraint>[(right >= cm(-20.0)), c]),
         Result.duplicateConstraint);
   });
 
   test('edit_constraints', () {
-    Param left = new Param(0.0)..name = "left";
-    Param right = new Param(0.0)..name = "right";
-    Param mid = new Param(0.0)..name = "mid";
+    final left = Param(0.0)..name = 'left';
+    final right = Param(0.0)..name = 'right';
+    final mid = Param(0.0)..name = 'mid';
 
-    Solver s = new Solver();
+    final s = Solver();
 
-    expect(s.addConstraint((right + left).equals(mid * cm(2.0))),
-        Result.success);
+    expect(
+        s.addConstraint((right + left).equals(mid * cm(2.0))), Result.success);
     expect(s.addConstraint(right - left >= cm(100.0)), Result.success);
     expect(s.addConstraint(left >= cm(0.0)), Result.success);
 
@@ -491,13 +493,13 @@ void main() {
   });
 
   test('test_description', () {
-    Param left = new Param(0.0);
-    Param right = new Param(100.0);
-    Constraint c1 = right >= left;
-    Constraint c2 = right <= left;
-    Constraint c3 = right.equals(left);
+    final left = Param(0.0);
+    final right = Param(100.0);
+    final c1 = right >= left;
+    final c2 = right <= left;
+    final c3 = right.equals(left);
 
-    Solver s = new Solver();
+    final s = Solver();
     expect(s.addConstraint(c1), Result.success);
     expect(s.addConstraint(c2), Result.success);
     expect(s.addConstraint(c3), Result.success);
@@ -506,23 +508,20 @@ void main() {
   });
 
   test('solution_with_optimize', () {
-    Param p1 = new Param();
-    Param p2 = new Param();
-    Param p3 = new Param();
+    final p1 = Param();
+    final p2 = Param();
+    final p3 = Param();
 
-    Param container = new Param();
+    final container = Param();
 
-    Solver solver = new Solver();
-
-    solver.addEditVariable(container.variable, Priority.strong);
-    solver.suggestValueForVariable(container.variable, 100.0);
-
-    solver.addConstraint((p1 >= cm(30.0)) | Priority.strong);
-    solver.addConstraint(p1.equals(p3) | Priority.medium);
-    solver.addConstraint(p2.equals(cm(2.0) * p1));
-    solver.addConstraint(container.equals(p1 + p2 + p3));
-
-    solver.flushUpdates();
+    Solver()
+      ..addEditVariable(container.variable, Priority.strong)
+      ..suggestValueForVariable(container.variable, 100.0)
+      ..addConstraint((p1 >= cm(30.0)) | Priority.strong)
+      ..addConstraint(p1.equals(p3) | Priority.medium)
+      ..addConstraint(p2.equals(cm(2.0) * p1))
+      ..addConstraint(container.equals(p1 + p2 + p3))
+      ..flushUpdates();
 
     expect(container.value, 100.0);
 
@@ -532,21 +531,21 @@ void main() {
   });
 
   test('test_updates_collection', () {
-    Param left = new Param.withContext("left");
-    Param mid = new Param.withContext("mid");
-    Param right = new Param.withContext("right");
+    final left = Param.withContext('left');
+    final mid = Param.withContext('mid');
+    final right = Param.withContext('right');
 
-    Solver s = new Solver();
+    final s = Solver();
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(s.addConstraint((mid * cm(2.0)).equals(left + right)),
-        Result.success);
+    expect(
+        s.addConstraint((mid * cm(2.0)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(0.0)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50.0), Result.success);
 
-    Set<dynamic> updates = s.flushUpdates();
+    final updates = s.flushUpdates();
 
     expect(updates.length, 2);
 
@@ -556,21 +555,21 @@ void main() {
   });
 
   test('test_updates_collection_is_set', () {
-    Param left = new Param.withContext("a");
-    Param mid = new Param.withContext("a");
-    Param right = new Param.withContext("a");
+    final left = Param.withContext('a');
+    final mid = Param.withContext('a');
+    final right = Param.withContext('a');
 
-    Solver s = new Solver();
+    final s = Solver();
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(s.addConstraint((mid * cm(2.0)).equals(left + right)),
-        Result.success);
+    expect(
+        s.addConstraint((mid * cm(2.0)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(10.0)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50.0), Result.success);
 
-    Set<dynamic> updates = s.flushUpdates();
+    final updates = s.flushUpdates();
 
     expect(updates.length, 1);
 
@@ -580,47 +579,52 @@ void main() {
   });
 
   test('param_context_non_final', () {
-    Param p = new Param.withContext("a");
-    p.context = "b";
-    expect(p.context, "b");
+    final p = Param.withContext('a')..context = 'b';
+    expect(p.context, 'b');
   });
 
   test('check_type_of_eq_result', () {
-    Param left = new Param();
-    Param right = new Param();
+    final left = Param();
+    final right = Param();
 
     expect(left.equals(right).runtimeType, Constraint);
   });
 
   test('bulk_add_edit_variables', () {
-    Solver s = new Solver();
+    final s = Solver();
 
-    Param left = new Param(0.0);
-    Param right = new Param(100.0);
-    Param mid = new Param(0.0);
+    final left = Param(0.0);
+    final right = Param(100.0);
+    final mid = Param(0.0);
 
-    expect(s.addEditVariables(
-         <Variable>[left.variable, right.variable, mid.variable], 999.0), Result.success);
+    expect(
+        s.addEditVariables(
+            <Variable>[left.variable, right.variable, mid.variable], 999.0),
+        Result.success);
   });
 
   test('bulk_remove_constraints_and_variables', () {
-    Solver s = new Solver();
+    final s = Solver();
 
-    Param left = new Param(0.0);
-    Param right = new Param(100.0);
-    Param mid = new Param(0.0);
+    final left = Param(0.0);
+    final right = Param(100.0);
+    final mid = Param(0.0);
 
-    expect(s.addEditVariables(
-         <Variable>[left.variable, right.variable, mid.variable], 999.0), Result.success);
+    expect(
+        s.addEditVariables(
+            <Variable>[left.variable, right.variable, mid.variable], 999.0),
+        Result.success);
 
-    Constraint c1 = left <= mid;
-    Constraint c2 = mid <= right;
+    final c1 = left <= mid;
+    final c2 = mid <= right;
 
     expect(s.addConstraints(<Constraint>[c1, c2]), Result.success);
 
     expect(s.removeConstraints(<Constraint>[c1, c2]), Result.success);
 
-    expect(s.removeEditVariables(
-                <Variable>[left.variable, right.variable, mid.variable]), Result.success);
+    expect(
+        s.removeEditVariables(
+            <Variable>[left.variable, right.variable, mid.variable]),
+        Result.success);
   });
 }

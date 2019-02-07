@@ -25,7 +25,7 @@ class Term extends EquationMember {
 
   @override
   Expression asExpression() =>
-      new Expression(<Term>[new Term(this.variable, this.coefficient)], 0.0);
+      Expression(<Term>[Term(variable, coefficient)], 0.0);
 
   @override
   bool get isConstant => false;
@@ -35,13 +35,10 @@ class Term extends EquationMember {
 
   @override
   String toString() {
-    StringBuffer buffer = new StringBuffer();
-
-    buffer.write(coefficient.sign > 0.0 ? "+" : "-");
+    final buffer = StringBuffer()..write(coefficient.sign > 0.0 ? '+' : '-');
 
     if (coefficient.abs() != 1.0) {
-      buffer.write(coefficient.abs());
-      buffer.write("*");
+      buffer..write(coefficient.abs())..write('*');
     }
 
     buffer.write(variable);

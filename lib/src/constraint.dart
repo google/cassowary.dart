@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'priority.dart';
 import 'expression.dart';
+import 'priority.dart';
 
 /// Relationships between [Constraint] expressions.
 ///
@@ -57,8 +57,7 @@ class Constraint {
 
   @override
   String toString() {
-    StringBuffer buffer = new StringBuffer();
-    buffer.write(expression.toString());
+    final buffer = StringBuffer()..write(expression.toString());
 
     switch (relation) {
       case Relation.equalTo:

@@ -12,13 +12,13 @@
 /// * <https://constraints.cs.washington.edu/solvers/cassowary-tochi.pdf>
 library cassowary;
 
-export 'src/constraint.dart';
-export 'src/expression.dart';
-export 'src/term.dart';
-export 'src/equation_member.dart';
 export 'src/constant_member.dart';
-export 'src/solver.dart';
-export 'src/result.dart';
-export 'src/parser_exception.dart';
+export 'src/constraint.dart';
+export 'src/equation_member.dart';
+export 'src/expression.dart';
 export 'src/param.dart';
+export 'src/parser_exception.dart';
 export 'src/priority.dart';
+export 'src/result.dart';
+export 'src/solver.dart';
+export 'src/term.dart';

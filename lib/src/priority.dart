@@ -38,7 +38,7 @@ class Priority {
   /// By convention, at least one of these numbers should be equal to or greater
   /// than 1.
   static double create(double a, double b, double c) {
-    double result = 0.0;
+    var result = 0.0;
     result += max(0.0, min(1e3, a)) * 1e6;
     result += max(0.0, min(1e3, b)) * 1e3;
     result += max(0.0, min(1e3, c));
