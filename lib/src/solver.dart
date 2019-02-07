@@ -6,9 +6,9 @@ import 'dart:collection';
 
 import 'constraint.dart';
 import 'expression.dart';
+import 'param.dart';
 import 'priority.dart';
 import 'result.dart';
-import 'param.dart';
 import 'term.dart';
 
 enum _SymbolType { invalid, external, slack, error, dummy }
@@ -22,8 +22,8 @@ class _Symbol {
 class _Tag {
   _Tag(this.marker, this.other);
   _Tag.fromTag(_Tag tag)
-      : this.marker = tag.marker,
-        this.other = tag.other;
+      : marker = tag.marker,
+        other = tag.other;
   _Symbol marker;
   _Symbol other;
 }
@@ -34,23 +34,22 @@ class _EditInfo {
   double constant;
 }
 
-bool _isValidNonRequiredPriority(double priority) {
-  return (priority >= 0.0 && priority < Priority.required);
-}
+bool _isValidNonRequiredPriority(double priority) =>
+    (priority >= 0.0 && priority < Priority.required);
 
-typedef Result _SolverBulkUpdate(dynamic item);
+typedef _SolverBulkUpdate = Result Function(Object);
 
 bool _nearZero(double value) {
-  const double epsilon = 1.0e-8;
+  const epsilon = 1.0e-8;
   return value < 0.0 ? -value < epsilon : value < epsilon;
 }
 
 class _Row {
-  _Row(this.constant) : this.cells = new Map<_Symbol, double>();
+  _Row(this.constant) : cells = {};
 
   _Row.fromRow(_Row row)
-      : this.cells = new Map<_Symbol, double>.from(row.cells),
-        this.constant = row.constant;
+      : cells = Map<_Symbol, double>.from(row.cells),
+        constant = row.constant;
 
   final Map<_Symbol, double> cells;
 
@@ -59,7 +58,7 @@ class _Row {
   double add(double value) => constant += value;
 
   void insertSymbol(_Symbol symbol, [double coefficient = 1.0]) {
-    double val = cells[symbol] ?? 0.0;
+    final val = cells[symbol] ?? 0.0;
 
     if (_nearZero(val + coefficient)) {
       cells.remove(symbol);
@@ -70,8 +69,7 @@ class _Row {
 
   void insertRow(_Row other, [double coefficient = 1.0]) {
     constant += other.constant * coefficient;
-    other.cells
-        .forEach((_Symbol s, double v) => insertSymbol(s, v * coefficient));
+    other.cells.forEach((s, v) => insertSymbol(s, v * coefficient));
   }
 
   void removeSymbol(_Symbol symbol) {
@@ -80,15 +78,15 @@ class _Row {
 
   void reverseSign() {
     constant = -constant;
-    cells.forEach((_Symbol s, double v) => cells[s] = -v);
+    cells.forEach((s, v) => cells[s] = -v);
   }
 
   void solveForSymbol(_Symbol symbol) {
     assert(cells.containsKey(symbol));
-    double coefficient = -1.0 / cells[symbol];
+    final coefficient = -1.0 / cells[symbol];
     cells.remove(symbol);
     constant *= coefficient;
-    cells.forEach((_Symbol s, double v) => cells[s] = v * coefficient);
+    cells.forEach((s, v) => cells[s] = v * coefficient);
   }
 
   void solveForSymbols(_Symbol lhs, _Symbol rhs) {
@@ -99,7 +97,7 @@ class _Row {
   double coefficientForSymbol(_Symbol symbol) => cells[symbol] ?? 0.0;
 
   void substitute(_Symbol symbol, _Row row) {
-    double coefficient = cells[symbol];
+    final coefficient = cells[symbol];
 
     if (coefficient == null) {
       return;
@@ -111,12 +109,10 @@ class _Row {
 
   @override
   String toString() {
-    StringBuffer buffer = new StringBuffer();
+    final buffer = StringBuffer()..write(constant);
 
-    buffer.write(constant);
-
-    cells.forEach((_Symbol symbol, double value) {
-      buffer.write(" + " + value.toString() + " * " + symbol.toString());
+    cells.forEach((symbol, value) {
+      buffer.write('${value.toString()} * ${symbol.toString()}');
     });
 
     return buffer.toString();
@@ -128,14 +124,14 @@ class _Row {
 /// Typically clients will create a solver, [addConstraints], and then call
 /// [flushUpdates] to actually solve the constraints.
 class Solver {
-  final Map<Constraint, _Tag> _constraints = new Map<Constraint, _Tag>();
-  final Map<_Symbol, _Row> _rows = new Map<_Symbol, _Row>();
-  final Map<Variable, _Symbol> _vars = new Map<Variable, _Symbol>();
-  final Map<Variable, _EditInfo> _edits = new Map<Variable, _EditInfo>();
-  final List<_Symbol> _infeasibleRows = new List<_Symbol>();
-  final _Row _objective = new _Row(0.0);
+  final Map<Constraint, _Tag> _constraints = {};
+  final Map<_Symbol, _Row> _rows = {};
+  final Map<Variable, _Symbol> _vars = {};
+  final Map<Variable, _EditInfo> _edits = {};
+  final List<_Symbol> _infeasibleRows = [];
+  final _Row _objective = _Row(0.0);
 
-  _Row _artificial = new _Row(0.0);
+  _Row _artificial = _Row(0.0);
 
   /// Attempts to add the constraints in the list to the solver. If it cannot
   /// add any for some reason, a cleanup is attempted so that either all
@@ -155,10 +151,10 @@ class Solver {
   ///   constraints at the same priority. Lower the priority of these
   ///   constraints and try again.
   Result addConstraints(List<Constraint> constraints) {
-    Result applier(c) => addConstraint(c);
-    Result undoer(c) => removeConstraint(c);
+    Result _applier(c) => addConstraint(c);
+    Result _undoer(c) => removeConstraint(c);
 
-    return _bulkEdit(constraints, applier, undoer);
+    return _bulkEdit(constraints, _applier, _undoer);
   }
 
   /// Attempts to add an individual [Constraint] to the solver.
@@ -180,14 +176,14 @@ class Solver {
       return Result.duplicateConstraint;
     }
 
-    _Tag tag = new _Tag(
-      new _Symbol(_SymbolType.invalid),
-      new _Symbol(_SymbolType.invalid),
+    final tag = _Tag(
+      _Symbol(_SymbolType.invalid),
+      _Symbol(_SymbolType.invalid),
     );
 
-    _Row row = _createRow(constraint, tag);
+    final row = _createRow(constraint, tag);
 
-    _Symbol subject = _chooseSubjectForRow(row, tag);
+    var subject = _chooseSubjectForRow(row, tag);
 
     if (subject.type == _SymbolType.invalid && _allDummiesInRow(row)) {
       if (!_nearZero(row.constant)) {
@@ -228,10 +224,10 @@ class Solver {
   /// * [Result.unknownConstraint]: One or more constraints in the list were
   ///   not in the solver. So there was nothing to remove.
   Result removeConstraints(List<Constraint> constraints) {
-    Result applier(c) => removeConstraint(c);
-    Result undoer(c) => addConstraint(c);
+    Result _applier(c) => removeConstraint(c);
+    Result _undoer(c) => addConstraint(c);
 
-    return _bulkEdit(constraints, applier, undoer);
+    return _bulkEdit(constraints, _applier, _undoer);
   }
 
   /// Attempt to remove an individual [Constraint] from the solver.
@@ -246,21 +242,21 @@ class Solver {
   /// * [Result.unknownConstraint]: The [Constraint] was not in the solver so
   ///   there was nothing to remove.
   Result removeConstraint(Constraint constraint) {
-    _Tag tag = _constraints[constraint];
+    var tag = _constraints[constraint];
     if (tag == null) {
       return Result.unknownConstraint;
     }
 
-    tag = new _Tag.fromTag(tag);
+    tag = _Tag.fromTag(tag);
     _constraints.remove(constraint);
 
     _removeConstraintEffects(constraint, tag);
 
-    _Row row = _rows[tag.marker];
+    var row = _rows[tag.marker];
     if (row != null) {
       _rows.remove(tag.marker);
     } else {
-      _Symbol leaving = _leavingSymbolForMarkerSymbol(tag.marker);
+      final leaving = _leavingSymbolForMarkerSymbol(tag.marker);
       assert(leaving != null);
 
       row = _rows.remove(leaving);
@@ -273,9 +269,8 @@ class Solver {
   }
 
   /// Returns whether the given [Constraint] is present in the solver.
-  bool hasConstraint(Constraint constraint) {
-    return _constraints.containsKey(constraint);
-  }
+  bool hasConstraint(Constraint constraint) =>
+      _constraints.containsKey(constraint);
 
   /// Adds a list of edit [Variable]s to the [Solver] at a given priority.
   /// Either all edit [Variable] are added or none. No edit variables may be
@@ -299,10 +294,10 @@ class Solver {
   ///   allows the solver to check for satisfiability of the constraint (w.r.t
   ///   other constraints at [Priority.required]) and check for duplicates.
   Result addEditVariables(List<Variable> variables, double priority) {
-    Result applier(v) => addEditVariable(v, priority);
-    Result undoer(v) => removeEditVariable(v);
+    Result _applier(v) => addEditVariable(v, priority);
+    Result _undoer(v) => removeEditVariable(v);
 
-    return _bulkEdit(variables, applier, undoer);
+    return _bulkEdit(variables, _applier, _undoer);
   }
 
   /// Attempt to add a single edit [Variable] to the [Solver] at the given
@@ -334,18 +329,17 @@ class Solver {
       return Result.badRequiredStrength;
     }
 
-    Constraint constraint = new Constraint(
-      new Expression(<Term>[new Term(variable, 1.0)], 0.0),
+    final constraint = Constraint(
+      Expression(<Term>[Term(variable, 1.0)], 0.0),
       Relation.equalTo,
-    );
-    constraint.priority = priority;
+    )..priority = priority;
 
     assert(addConstraint(constraint) == Result.success);
 
-    _EditInfo info = new _EditInfo();
-    info.tag = _constraints[constraint];
-    info.constraint = constraint;
-    info.constant = 0.0;
+    final info = _EditInfo()
+      ..tag = _constraints[constraint]
+      ..constraint = constraint
+      ..constant = 0.0;
 
     _edits[variable] = info;
 
@@ -365,10 +359,10 @@ class Solver {
   /// * [Result.unknownEditVariable]: One of more edit variables were not
   ///   already present in the solver.
   Result removeEditVariables(List<Variable> variables) {
-    Result applier(v) => removeEditVariable(v);
-    Result undoer(v) => addEditVariable(v, _edits[v].constraint.priority);
+    Result _applier(v) => removeEditVariable(v);
+    Result _undoer(v) => addEditVariable(v, _edits[v].constraint.priority);
 
-    return _bulkEdit(variables, applier, undoer);
+    return _bulkEdit(variables, _applier, _undoer);
   }
 
   /// Attempt to remove the specified edit [Variable] from the solver.
@@ -383,7 +377,7 @@ class Solver {
   /// * [Result.unknownEditVariable]: The edit variable was not present in the
   ///   solver. There was nothing to remove.
   Result removeEditVariable(Variable variable) {
-    _EditInfo info = _edits[variable];
+    final info = _edits[variable];
     if (info == null) {
       return Result.unknownEditVariable;
     }
@@ -395,9 +389,7 @@ class Solver {
   }
 
   /// Returns whether the given edit [Variable] is present in the solver.
-  bool hasEditVariable(Variable variable) {
-    return _edits.containsKey(variable);
-  }
+  bool hasEditVariable(Variable variable) => _edits.containsKey(variable);
 
   /// Suggest an updated value for the edit variable. The edit variable
   /// must already be added to the solver.
@@ -443,16 +435,16 @@ class Solver {
   /// [Solver] can read these updates in one shot by "flushing" out these
   /// updates.
   Set<dynamic> flushUpdates() {
-    Set<dynamic> updates = new HashSet<dynamic>();
+    final updates = HashSet<dynamic>();
 
-    for (Variable variable in _vars.keys) {
-      _Symbol symbol = _vars[variable];
-      _Row row = _rows[symbol];
+    for (final variable in _vars.keys) {
+      final symbol = _vars[variable];
+      final row = _rows[symbol];
 
-      double updatedValue = row == null ? 0.0 : row.constant;
+      final updatedValue = row == null ? 0.0 : row.constant;
 
       if (variable.applyUpdate(updatedValue) && variable.owner != null) {
-        dynamic context = variable.owner.context;
+        final context = variable.owner.context;
         if (context != null) {
           updates.add(context);
         }
@@ -467,12 +459,12 @@ class Solver {
     _SolverBulkUpdate applier,
     _SolverBulkUpdate undoer,
   ) {
-    List<dynamic> applied = <dynamic>[];
-    bool needsCleanup = false;
+    final applied = <dynamic>[];
+    var needsCleanup = false;
 
-    Result result = Result.success;
+    var result = Result.success;
 
-    for (dynamic item in items) {
+    for (final item in items) {
       result = applier(item);
       if (result == Result.success) {
         applied.add(item);
@@ -483,36 +475,34 @@ class Solver {
     }
 
     if (needsCleanup) {
-      for (dynamic item in applied.reversed) {
-        undoer(item);
-      }
+      applied.reversed.forEach(undoer);
     }
 
     return result;
   }
 
   _Symbol _symbolForVariable(Variable variable) {
-    _Symbol symbol = _vars[variable];
+    var symbol = _vars[variable];
 
     if (symbol != null) {
       return symbol;
     }
 
-    symbol = new _Symbol(_SymbolType.external);
+    symbol = _Symbol(_SymbolType.external);
     _vars[variable] = symbol;
 
     return symbol;
   }
 
   _Row _createRow(Constraint constraint, _Tag tag) {
-    Expression expr = new Expression.fromExpression(constraint.expression);
-    _Row row = new _Row(expr.constant);
+    final expr = Expression.fromExpression(constraint.expression);
+    final row = _Row(expr.constant);
 
-    expr.terms.forEach((Term term) {
+    for (final term in expr.terms) {
       if (!_nearZero(term.coefficient)) {
-        _Symbol symbol = _symbolForVariable(term.variable);
+        final symbol = _symbolForVariable(term.variable);
 
-        _Row foundRow = _rows[symbol];
+        final foundRow = _rows[symbol];
 
         if (foundRow != null) {
           row.insertRow(foundRow, term.coefficient);
@@ -520,21 +510,21 @@ class Solver {
           row.insertSymbol(symbol, term.coefficient);
         }
       }
-    });
+    }
 
     switch (constraint.relation) {
       case Relation.lessThanOrEqualTo:
       case Relation.greaterThanOrEqualTo:
         {
-          double coefficient =
+          final coefficient =
               constraint.relation == Relation.lessThanOrEqualTo ? 1.0 : -1.0;
 
-          _Symbol slack = new _Symbol(_SymbolType.slack);
+          final slack = _Symbol(_SymbolType.slack);
           tag.marker = slack;
           row.insertSymbol(slack, coefficient);
 
           if (constraint.priority < Priority.required) {
-            _Symbol error = new _Symbol(_SymbolType.error);
+            final error = _Symbol(_SymbolType.error);
             tag.other = error;
             row.insertSymbol(error, -coefficient);
             _objective.insertSymbol(error, constraint.priority);
@@ -543,16 +533,17 @@ class Solver {
         break;
       case Relation.equalTo:
         if (constraint.priority < Priority.required) {
-          _Symbol errPlus = new _Symbol(_SymbolType.error);
-          _Symbol errMinus = new _Symbol(_SymbolType.error);
-          tag.marker = errPlus;
-          tag.other = errMinus;
-          row.insertSymbol(errPlus, -1.0);
-          row.insertSymbol(errMinus, 1.0);
-          _objective.insertSymbol(errPlus, constraint.priority);
-          _objective.insertSymbol(errMinus, constraint.priority);
+          final errPlus = _Symbol(_SymbolType.error);
+          final errMinus = _Symbol(_SymbolType.error);
+          tag
+            ..marker = errPlus
+            ..other = errMinus;
+          row..insertSymbol(errPlus, -1.0)..insertSymbol(errMinus, 1.0);
+          _objective
+            ..insertSymbol(errPlus, constraint.priority)
+            ..insertSymbol(errMinus, constraint.priority);
         } else {
-          _Symbol dummy = new _Symbol(_SymbolType.dummy);
+          final dummy = _Symbol(_SymbolType.dummy);
           tag.marker = dummy;
           row.insertSymbol(dummy);
         }
@@ -567,7 +558,7 @@ class Solver {
   }
 
   _Symbol _chooseSubjectForRow(_Row row, _Tag tag) {
-    for (_Symbol symbol in row.cells.keys) {
+    for (final symbol in row.cells.keys) {
       if (symbol.type == _SymbolType.external) {
         return symbol;
       }
@@ -587,11 +578,11 @@ class Solver {
       }
     }
 
-    return new _Symbol(_SymbolType.invalid);
+    return _Symbol(_SymbolType.invalid);
   }
 
   bool _allDummiesInRow(_Row row) {
-    for (_Symbol symbol in row.cells.keys) {
+    for (final symbol in row.cells.keys) {
       if (symbol.type != _SymbolType.dummy) {
         return false;
       }
@@ -600,28 +591,28 @@ class Solver {
   }
 
   bool _addWithArtificialVariableOnRow(_Row row) {
-    _Symbol artificial = new _Symbol(_SymbolType.slack);
-    _rows[artificial] = new _Row.fromRow(row);
-    _artificial = new _Row.fromRow(row);
+    final artificial = _Symbol(_SymbolType.slack);
+    _rows[artificial] = _Row.fromRow(row);
+    _artificial = _Row.fromRow(row);
 
-    Result result = _optimizeObjectiveRow(_artificial);
+    final result = _optimizeObjectiveRow(_artificial);
 
-    if (result.error) {
+    if (result.isError) {
       // FIXME(csg): Propagate this up!
       return false;
     }
 
-    bool success = _nearZero(_artificial.constant);
-    _artificial = new _Row(0.0);
+    final success = _nearZero(_artificial.constant);
+    _artificial = _Row(0.0);
 
-    _Row foundRow = _rows[artificial];
+    final foundRow = _rows[artificial];
     if (foundRow != null) {
       _rows.remove(artificial);
       if (foundRow.cells.isEmpty) {
         return success;
       }
 
-      _Symbol entering = _anyPivotableSymbol(foundRow);
+      final entering = _anyPivotableSymbol(foundRow);
       if (entering.type == _SymbolType.invalid) {
         return false;
       }
@@ -631,7 +622,7 @@ class Solver {
       _rows[entering] = foundRow;
     }
 
-    for (_Row row in _rows.values) {
+    for (final row in _rows.values) {
       row.removeSymbol(artificial);
     }
     _objective.removeSymbol(artificial);
@@ -639,42 +630,40 @@ class Solver {
   }
 
   Result _optimizeObjectiveRow(_Row objective) {
-    while (true) {
-      _Symbol entering = _enteringSymbolForObjectiveRow(objective);
-      if (entering.type == _SymbolType.invalid) {
-        return Result.success;
-      }
-
-      _Symbol leaving = _leavingSymbolForEnteringSymbol(entering);
+    var entering = _enteringSymbolForObjectiveRow(objective);
+    while (entering.type != _SymbolType.invalid) {
+      final leaving = _leavingSymbolForEnteringSymbol(entering);
       assert(leaving != null);
 
-      _Row row = _rows.remove(leaving);
-      row.solveForSymbols(leaving, entering);
+      final row = _rows.remove(leaving)..solveForSymbols(leaving, entering);
       _substitute(entering, row);
       _rows[entering] = row;
+
+      entering = _enteringSymbolForObjectiveRow(objective);
     }
+    return Result.success;
   }
 
   _Symbol _enteringSymbolForObjectiveRow(_Row objective) {
-    Map<_Symbol, double> cells = objective.cells;
+    final cells = objective.cells;
 
-    for (_Symbol symbol in cells.keys) {
+    for (final symbol in cells.keys) {
       if (symbol.type != _SymbolType.dummy && cells[symbol] < 0.0) {
         return symbol;
       }
     }
 
-    return new _Symbol(_SymbolType.invalid);
+    return _Symbol(_SymbolType.invalid);
   }
 
   _Symbol _leavingSymbolForEnteringSymbol(_Symbol entering) {
-    double ratio = double.maxFinite;
+    var ratio = double.maxFinite;
     _Symbol result;
-    _rows.forEach((_Symbol symbol, _Row row) {
+    _rows.forEach((symbol, row) {
       if (symbol.type != _SymbolType.external) {
-        double temp = row.coefficientForSymbol(entering);
+        final temp = row.coefficientForSymbol(entering);
         if (temp < 0.0) {
-          double tempRatio = -row.constant / temp;
+          final tempRatio = -row.constant / temp;
           if (tempRatio < ratio) {
             ratio = tempRatio;
             result = symbol;
@@ -686,7 +675,7 @@ class Solver {
   }
 
   void _substitute(_Symbol symbol, _Row row) {
-    _rows.forEach((_Symbol first, _Row second) {
+    _rows.forEach((first, second) {
       second.substitute(symbol, row);
       if (first.type != _SymbolType.external && second.constant < 0.0) {
         _infeasibleRows.add(first);
@@ -699,13 +688,13 @@ class Solver {
   }
 
   _Symbol _anyPivotableSymbol(_Row row) {
-    for (_Symbol symbol in row.cells.keys) {
+    for (final symbol in row.cells.keys) {
       if (symbol.type == _SymbolType.slack ||
           symbol.type == _SymbolType.error) {
         return symbol;
       }
     }
-    return new _Symbol(_SymbolType.invalid);
+    return _Symbol(_SymbolType.invalid);
   }
 
   void _removeConstraintEffects(Constraint cn, _Tag tag) {
@@ -718,7 +707,7 @@ class Solver {
   }
 
   void _removeMarkerEffects(_Symbol marker, double strength) {
-    _Row row = _rows[marker];
+    final row = _rows[marker];
     if (row != null) {
       _objective.insertRow(row, -strength);
     } else {
@@ -727,26 +716,26 @@ class Solver {
   }
 
   _Symbol _leavingSymbolForMarkerSymbol(_Symbol marker) {
-    double r1 = double.maxFinite;
-    double r2 = double.maxFinite;
+    var r1 = double.maxFinite;
+    var r2 = double.maxFinite;
 
     _Symbol first, second, third;
 
-    _rows.forEach((_Symbol symbol, _Row row) {
-      double c = row.coefficientForSymbol(marker);
+    _rows.forEach((symbol, row) {
+      final c = row.coefficientForSymbol(marker);
       if (c == 0.0) {
         return;
       }
       if (symbol.type == _SymbolType.external) {
         third = symbol;
       } else if (c < 0.0) {
-        double r = -row.constant / c;
+        final r = -row.constant / c;
         if (r < r1) {
           r1 = r;
           first = symbol;
         }
       } else {
-        double r = row.constant / c;
+        final r = row.constant / c;
         if (r < r2) {
           r2 = r;
           second = symbol;
@@ -759,12 +748,12 @@ class Solver {
 
   void _suggestValueForEditInfoWithoutDualOptimization(
       _EditInfo info, double value) {
-    double delta = value - info.constant;
+    final delta = value - info.constant;
     info.constant = value;
 
     {
-      _Symbol symbol = info.tag.marker;
-      _Row row = _rows[info.tag.marker];
+      var symbol = info.tag.marker;
+      var row = _rows[info.tag.marker];
 
       if (row != null) {
         if (row.add(-delta) < 0.0) {
@@ -784,9 +773,9 @@ class Solver {
       }
     }
 
-    for (_Symbol symbol in _rows.keys) {
-      _Row row = _rows[symbol];
-      double coeff = row.coefficientForSymbol(info.tag.marker);
+    for (final symbol in _rows.keys) {
+      final row = _rows[symbol];
+      final coeff = row.coefficientForSymbol(info.tag.marker);
       if (coeff != 0.0 &&
           row.add(delta * coeff) < 0.0 &&
           symbol.type != _SymbolType.external) {
@@ -797,11 +786,11 @@ class Solver {
 
   Result _dualOptimize() {
     while (_infeasibleRows.isNotEmpty) {
-      _Symbol leaving = _infeasibleRows.removeLast();
-      _Row row = _rows[leaving];
+      final leaving = _infeasibleRows.removeLast();
+      final row = _rows[leaving];
 
       if (row != null && row.constant < 0.0) {
-        _Symbol entering = _dualEnteringSymbolForRow(row);
+        final entering = _dualEnteringSymbolForRow(row);
 
         assert(entering.type != _SymbolType.invalid);
 
@@ -818,16 +807,16 @@ class Solver {
   _Symbol _dualEnteringSymbolForRow(_Row row) {
     _Symbol entering;
 
-    double ratio = double.maxFinite;
+    var ratio = double.maxFinite;
 
-    Map<_Symbol, double> rowCells = row.cells;
+    final rowCells = row.cells;
 
-    for (_Symbol symbol in rowCells.keys) {
-      double value = rowCells[symbol];
+    for (final symbol in rowCells.keys) {
+      final value = rowCells[symbol];
 
       if (value > 0.0 && symbol.type != _SymbolType.dummy) {
-        double coeff = _objective.coefficientForSymbol(symbol);
-        double r = coeff / value;
+        final coeff = _objective.coefficientForSymbol(symbol);
+        final r = coeff / value;
         if (r < ratio) {
           ratio = r;
           entering = symbol;
@@ -835,45 +824,44 @@ class Solver {
       }
     }
 
-    return entering ?? new _Symbol(_SymbolType.invalid);
+    return entering ?? _Symbol(_SymbolType.invalid);
   }
 
   @override
   String toString() {
-    StringBuffer buffer = new StringBuffer();
-    String separator = "\n~~~~~~~~~";
+    final buffer = StringBuffer();
+    const separator = '\n~~~~~~~~~';
 
-    // Objective
-    buffer.writeln(separator + " Objective");
-    buffer.writeln(_objective.toString());
+    buffer
+      // Objective
+      ..writeln('$separator Objective')
+      ..writeln(_objective.toString())
+      // Tableau
+      ..writeln('$separator Tableau');
 
-    // Tableau
-    buffer.writeln(separator + " Tableau");
-    _rows.forEach((_Symbol symbol, _Row row) {
+    _rows.forEach((symbol, row) {
       buffer.writeln('$symbol | $row');
     });
 
     // Infeasible
-    buffer.writeln(separator + " Infeasible");
-    _infeasibleRows.forEach((_Symbol symbol) {
-      buffer.writeln(symbol);
-    });
+    buffer.writeln('$separator Infeasible');
+    _infeasibleRows.forEach(buffer.writeln);
 
     // Variables
-    buffer.writeln(separator + " Variables");
-    _vars.forEach((Variable variable, _Symbol symbol) {
+    buffer.writeln('$separator Variables');
+    _vars.forEach((variable, symbol) {
       buffer.writeln('$variable = $symbol');
     });
 
     // Edit Variables
-    buffer.writeln(separator + " Edit Variables");
-    _edits.forEach((Variable variable, _EditInfo editinfo) {
+    buffer.writeln('$separator Edit Variables');
+    _edits.forEach((variable, editinfo) {
       buffer.writeln(variable);
     });
 
     // Constraints
-    buffer.writeln(separator + " Constraints");
-    _constraints.forEach((Constraint constraint, _Tag tag) {
+    buffer.writeln('$separator Constraints');
+    _constraints.forEach((constraint, tag) {
       buffer.writeln(constraint);
     });
 

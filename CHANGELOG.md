@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0+3
+ - Adding linter rules.
+
 ## 0.3.0+2
 
 - Adding example code and correcting sample code in the README.md.

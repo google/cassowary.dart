@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'expression.dart';
 import 'equation_member.dart';
+import 'expression.dart';
 import 'term.dart';
 
 /// A member of a [Constraint] [Expression] that represent a constant at the
@@ -16,7 +16,7 @@ class ConstantMember extends EquationMember {
   ConstantMember(this.value);
 
   @override
-  Expression asExpression() => new Expression(<Term>[], this.value);
+  Expression asExpression() => Expression(<Term>[], value);
 
   @override
   final double value;
@@ -28,4 +28,4 @@ class ConstantMember extends EquationMember {
 /// Creates a [ConstantMember].
 ///
 /// This is a convenience method to make cassowary expressions less verbose.
-ConstantMember cm(double value) => new ConstantMember(value);
+ConstantMember cm(double value) => ConstantMember(value);

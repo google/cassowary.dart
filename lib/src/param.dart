@@ -33,7 +33,7 @@ class Variable {
   /// Used by the [Solver] to apply updates to this variable. Only updated
   /// variables show up in [Solver] flush results.
   bool applyUpdate(double updated) {
-    bool res = updated != value;
+    final res = updated != value;
     value = updated;
     return res;
   }
@@ -43,15 +43,14 @@ class Variable {
 /// expression.
 class Param extends EquationMember {
   /// Creates a new [Param] with the specified constant value.
-  Param([double value = 0.0]) : variable = new Variable(value) {
+  Param([double value = 0.0]) : variable = Variable(value) {
     variable._owner = this;
   }
 
   /// Creates a new [Param] with the specified constant value that is tied
   /// to some object outside the solver.
-  Param.withContext(dynamic context, [double value = 0.0])
-      : variable = new Variable(value),
-        context = context {
+  Param.withContext(this.context, [double value = 0.0])
+      : variable = Variable(value) {
     variable._owner = this;
   }
 
@@ -62,8 +61,7 @@ class Param extends EquationMember {
   dynamic context;
 
   @override
-  Expression asExpression() =>
-      new Expression(<Term>[new Term(variable, 1.0)], 0.0);
+  Expression asExpression() => Expression(<Term>[Term(variable, 1.0)], 0.0);
 
   @override
   bool get isConstant => false;

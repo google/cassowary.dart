@@ -6,7 +6,7 @@ import 'solver.dart';
 
 /// Return values used by methods on the cassowary [Solver].
 class Result {
-  const Result._(this.message, {bool isError = true}) : error = isError;
+  const Result._(this.message, {this.isError = true});
 
   /// The human-readable string associated with this result.
   ///
@@ -15,39 +15,36 @@ class Result {
   final String message;
 
   /// Whether this [Result] represents an error (true) or not (false).
-  final bool error;
+  final bool isError;
 
   /// The result when the operation was successful.
-  static const Result success = const Result._('Success', isError: false);
+  static const Result success = Result._('Success', isError: false);
 
   /// The result when the [Constraint] could not be added to the [Solver]
   /// because it was already present in the solver.
-  static const Result duplicateConstraint =
-      const Result._('Duplicate constraint');
+  static const Result duplicateConstraint = Result._('Duplicate constraint');
 
   /// The result when the [Constraint] could not be added to the [Solver]
   /// because it was unsatisfiable. Try lowering the [Priority] of the
   /// [Constraint] and try again.
   static const Result unsatisfiableConstraint =
-      const Result._('Unsatisfiable constraint');
+      Result._('Unsatisfiable constraint');
 
   /// The result when the [Constraint] could not be removed from the solver
   /// because it was not present in the [Solver] to begin with.
-  static const Result unknownConstraint = const Result._('Unknown constraint');
+  static const Result unknownConstraint = Result._('Unknown constraint');
 
   /// The result when could not add the edit [Variable] to the [Solver] because
   /// it was already added to the [Solver] previously.
   static const Result duplicateEditVariable =
-      const Result._('Duplicate edit variable');
+      Result._('Duplicate edit variable');
 
   /// The result when the [Constraint] constraint was added at an invalid
   /// priority or an edit [Variable] was added at an invalid or required
   /// priority.
-  static const Result badRequiredStrength =
-      const Result._('Bad required strength');
+  static const Result badRequiredStrength = Result._('Bad required strength');
 
   /// The result when the edit [Variable] could not be removed from the solver
   /// because it was not present in the [Solver] to begin with.
-  static const Result unknownEditVariable =
-      const Result._('Unknown edit variable');
+  static const Result unknownEditVariable = Result._('Unknown edit variable');
 }

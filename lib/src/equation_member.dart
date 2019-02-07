@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'expression.dart';
 import 'constraint.dart';
+import 'expression.dart';
 
 /// A member that can be used to construct an [Expression] that may be
 /// used to create a constraint. This is to facilitate the easy creation of
