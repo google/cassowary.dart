@@ -12,19 +12,19 @@ import 'dart:math';
 class Priority {
   /// The [Priority] level that, by convention, is the highest allowed
   /// [Priority] level (1,000,000,000).
-  static final double required = create(1e3, 1e3, 1e3);
+  static final double required = create(1000, 1000, 1000);
 
   /// A [Priority] level that is below the [required] level but still near it
   /// (1,000,000).
-  static final double strong = create(1.0, 0.0, 0.0);
+  static final double strong = create(1, 0, 0);
 
   /// A [Priority] level logarithmically in the middle of [strong] and [weak]
   /// (1,000).
-  static final double medium = create(0.0, 1.0, 0.0);
+  static final double medium = create(0, 1, 0);
 
   /// A [Priority] level that, by convention, is the lowest allowed [Priority]
   /// level (1).
-  static final double weak = create(0.0, 0.0, 1.0);
+  static final double weak = create(0, 0, 1);
 
   /// Computes a [Priority] level by combining three numbers in the range
   /// 0..1000.
@@ -39,9 +39,9 @@ class Priority {
   /// than 1.
   static double create(double a, double b, double c) {
     var result = 0.0;
-    result += max(0.0, min(1e3, a)) * 1e6;
-    result += max(0.0, min(1e3, b)) * 1e3;
-    result += max(0.0, min(1e3, c));
+    result += max(0, min(1000, a)) * 1e6;
+    result += max(0, min(1000, b)) * 1e3;
+    result += max(0, min(1000, c));
     return result;
   }
 }

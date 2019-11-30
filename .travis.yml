@@ -1,3 +1,1 @@
 language: dart
-after_success:
-  - sh -c "travis/upload_coveralls_report.sh"

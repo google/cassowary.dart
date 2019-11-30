@@ -8,8 +8,8 @@ void main() {
   final solver = Solver();
   final left = Param(10);
   final right = Param(20);
-  final widthAtLeast100 = right - left >= cm(100.0);
-  final edgesPositive = (left >= cm(0.0))..priority = Priority.weak;
+  final widthAtLeast100 = right - left >= cm(100);
+  final edgesPositive = (left >= cm(0))..priority = Priority.weak;
   solver
     ..addConstraints([widthAtLeast100, edgesPositive])
     ..flushUpdates();
@@ -19,7 +19,7 @@ void main() {
   final mid = Variable(15);
   // It appears that == isn't defined
   solver
-    ..addConstraint((left + right).equals(Term(mid, 1.0) * cm(2.0)))
+    ..addConstraint((left + right).equals(Term(mid, 1) * cm(2)))
     ..addEditVariable(mid, Priority.strong)
     ..flushUpdates();
 
