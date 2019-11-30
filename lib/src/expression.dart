@@ -66,7 +66,7 @@ class Expression extends EquationMember {
     }
 
     if (value is Param) {
-      final newTerms = List<Term>.from(terms)..add(Term(value.variable, -1.0));
+      final newTerms = List<Term>.from(terms)..add(Term(value.variable, -1));
       return Constraint(Expression(newTerms, constant), relation);
     }
 
@@ -98,7 +98,7 @@ class Expression extends EquationMember {
 
     if (m is Param) {
       return Expression(
-        List<Term>.from(terms)..add(Term(m.variable, 1.0)),
+        List<Term>.from(terms)..add(Term(m.variable, 1)),
         constant,
       );
     }
@@ -125,7 +125,7 @@ class Expression extends EquationMember {
 
     if (m is Param) {
       return Expression(
-        List<Term>.from(terms)..add(Term(m.variable, -1.0)),
+        List<Term>.from(terms)..add(Term(m.variable, -1)),
         constant,
       );
     }
@@ -203,7 +203,7 @@ class Expression extends EquationMember {
   String toString() {
     final buffer = StringBuffer();
 
-    for (var t in terms) {
+    for (final t in terms) {
       buffer.write('$t');
     }
 

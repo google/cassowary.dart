@@ -61,7 +61,7 @@ class Param extends EquationMember {
   dynamic context;
 
   @override
-  Expression asExpression() => Expression(<Term>[Term(variable, 1.0)], 0.0);
+  Expression asExpression() => Expression(<Term>[Term(variable, 1)], 0);
 
   @override
   bool get isConstant => false;

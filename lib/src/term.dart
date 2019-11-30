@@ -25,7 +25,7 @@ class Term extends EquationMember {
 
   @override
   Expression asExpression() =>
-      Expression(<Term>[Term(variable, coefficient)], 0.0);
+      Expression(<Term>[Term(variable, coefficient)], 0);
 
   @override
   bool get isConstant => false;

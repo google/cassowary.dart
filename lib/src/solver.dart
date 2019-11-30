@@ -53,7 +53,7 @@ class _Row {
 
   final Map<_Symbol, double> cells;
 
-  double constant = 0.0;
+  double constant = 0;
 
   double add(double value) => constant += value;
 
@@ -90,7 +90,7 @@ class _Row {
   }
 
   void solveForSymbols(_Symbol lhs, _Symbol rhs) {
-    insertSymbol(lhs, -1.0);
+    insertSymbol(lhs, -1);
     solveForSymbol(rhs);
   }
 
@@ -129,9 +129,9 @@ class Solver {
   final Map<Variable, _Symbol> _vars = {};
   final Map<Variable, _EditInfo> _edits = {};
   final List<_Symbol> _infeasibleRows = [];
-  final _Row _objective = _Row(0.0);
+  final _Row _objective = _Row(0);
 
-  _Row _artificial = _Row(0.0);
+  _Row _artificial = _Row(0);
 
   /// Attempts to add the constraints in the list to the solver. If it cannot
   /// add any for some reason, a cleanup is attempted so that either all
@@ -330,7 +330,7 @@ class Solver {
     }
 
     final constraint = Constraint(
-      Expression(<Term>[Term(variable, 1.0)], 0.0),
+      Expression(<Term>[Term(variable, 1)], 0),
       Relation.equalTo,
     )..priority = priority;
 
@@ -538,7 +538,7 @@ class Solver {
           tag
             ..marker = errPlus
             ..other = errMinus;
-          row..insertSymbol(errPlus, -1.0)..insertSymbol(errMinus, 1.0);
+          row..insertSymbol(errPlus, -1)..insertSymbol(errMinus, 1);
           _objective
             ..insertSymbol(errPlus, constraint.priority)
             ..insertSymbol(errMinus, constraint.priority);
@@ -603,7 +603,7 @@ class Solver {
     }
 
     final success = _nearZero(_artificial.constant);
-    _artificial = _Row(0.0);
+    _artificial = _Row(0);
 
     final foundRow = _rows[artificial];
     if (foundRow != null) {

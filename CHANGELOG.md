@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0+4
+ - Updating dependencies.
+
 ## 0.3.0+3
  - Adding linter rules.
 
