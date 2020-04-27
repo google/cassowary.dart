@@ -12,7 +12,7 @@ import 'dart:math';
 class Priority {
   /// The [Priority] level that, by convention, is the highest allowed
   /// [Priority] level (1,000,000,000).
-  static final double required = create(1000, 1000, 1000);
+  static final double required = create(1000, 0, 0);
 
   /// A [Priority] level that is below the [required] level but still near it
   /// (1,000,000).
