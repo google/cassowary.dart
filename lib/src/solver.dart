@@ -384,7 +384,9 @@ class Solver {
       return Result.unknownEditVariable;
     }
 
-    assert(removeConstraint(info.constraint) == Result.success);
+    // ignore: unused_local_variable
+    final result = removeConstraint(info.constraint);
+    assert(result == Result.success);
 
     _edits.remove(variable);
     return Result.success;
