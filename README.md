@@ -4,6 +4,7 @@ Cassowary in Dart
 [![Pub](https://img.shields.io/pub/v/cassowary.svg?style=flat-square)](https://pub.dartlang.org/packages/cassowary)
 [![Build Status](https://travis-ci.org/flutter/cassowary.svg?branch=master)](https://travis-ci.org/flutter/cassowary)
 [![Coverage Status](https://coveralls.io/repos/github/flutter/cassowary/badge.svg?branch=master)](https://coveralls.io/github/flutter/cassowary?branch=master)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/google/cassowary.dart) 
 
 This is an implementation of the Cassowary constraint solving algorithm in Dart. The initial implementation was based on the [Kiwi toolkit](https://github.com/nucleic/kiwi) written in C++. Implements a subset of the functionality described in the [Cassowary paper](https://constraints.cs.washington.edu/solvers/cassowary-tochi.pdf) and makes specific affordances for the needs of [Flutter](http://flutter.io/)
 

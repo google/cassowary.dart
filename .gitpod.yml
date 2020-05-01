@@ -1,0 +1,5 @@
+tasks:
+  - init: pub get
+
+image:
+  file: .gitpod.Dockerfile
