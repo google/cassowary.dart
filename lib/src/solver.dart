@@ -21,6 +21,7 @@ class _Symbol {
 
 class _Tag {
   _Tag(this.marker, this.other);
+
   _Tag.fromTag(_Tag tag)
       : marker = tag.marker,
         other = tag.other;
@@ -457,7 +458,7 @@ class Solver {
   }
 
   Result _bulkEdit(
-    Iterable<dynamic> items,
+    Iterable<Object> items,
     _SolverBulkUpdate applier,
     _SolverBulkUpdate undoer,
   ) {
@@ -683,9 +684,7 @@ class Solver {
       }
     });
     _objective.substitute(symbol, row);
-    if (_artificial != null) {
-      _artificial.substitute(symbol, row);
-    }
+    _artificial.substitute(symbol, row);
   }
 
   _Symbol _anyPivotableSymbol(_Row row) {

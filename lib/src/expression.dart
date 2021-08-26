@@ -11,6 +11,7 @@ import 'term.dart';
 
 class _Multiplication {
   const _Multiplication(this.multiplier, this.multiplicand);
+
   final Expression multiplier;
   final double multiplicand;
 }
@@ -86,7 +87,6 @@ class Expression extends EquationMember {
         relation,
       );
     }
-
     throw Exception();
   }
 
