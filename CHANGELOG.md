@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+ - Null Safety
+ - Add CI
+
 ## 0.3.1
  - Bug fixes.
 
