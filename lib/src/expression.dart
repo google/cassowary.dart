@@ -46,16 +46,15 @@ class Expression extends EquationMember {
   double get value => terms.fold(constant, (value, term) => value + term.value);
 
   @override
-  Constraint operator >=(EquationMember value) =>
-      _createConstraint(value, Relation.greaterThanOrEqualTo);
+  Constraint operator >=(EquationMember m) =>
+      _createConstraint(m, Relation.greaterThanOrEqualTo);
 
   @override
-  Constraint operator <=(EquationMember value) =>
-      _createConstraint(value, Relation.lessThanOrEqualTo);
+  Constraint operator <=(EquationMember m) =>
+      _createConstraint(m, Relation.lessThanOrEqualTo);
 
   @override
-  Constraint equals(EquationMember value) =>
-      _createConstraint(value, Relation.equalTo);
+  Constraint equals(EquationMember m) => _createConstraint(m, Relation.equalTo);
 
   Constraint _createConstraint(
       EquationMember /* rhs */ value, Relation relation) {
@@ -148,7 +147,7 @@ class Expression extends EquationMember {
 
   @override
   Expression operator *(EquationMember m) {
-    final args = _findMulitplierAndMultiplicand(m);
+    final args = _findMultiplierAndMultiplicand(m);
 
     if (args == null) {
       throw ParserException(
@@ -170,7 +169,7 @@ class Expression extends EquationMember {
     return _applyMultiplicand(1.0 / m.value);
   }
 
-  _Multiplication? _findMulitplierAndMultiplicand(EquationMember m) {
+  _Multiplication? _findMultiplierAndMultiplicand(EquationMember m) {
     // At least one of the the two members must be constant for the resulting
     // expression to be linear
 
