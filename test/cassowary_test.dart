@@ -408,8 +408,7 @@ void main() {
     expect(s.addConstraint(c), Result.success);
 
     expect(s.addEditVariable(mid.variable, 999), Result.success);
-    expect(
-        s.addEditVariable(mid.variable, 999), Result.duplicateEditVariable);
+    expect(s.addEditVariable(mid.variable, 999), Result.duplicateEditVariable);
     expect(s.removeEditVariable(mid.variable), Result.success);
     expect(s.removeEditVariable(mid.variable), Result.unknownEditVariable);
   });
@@ -437,8 +436,7 @@ void main() {
 
     final s = Solver();
 
-    expect(
-        s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
+    expect(s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
     expect(s.addConstraint(right - left >= cm(100)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
@@ -477,8 +475,7 @@ void main() {
 
     final s = Solver();
 
-    expect(
-        s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
+    expect(s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
     expect(s.addConstraint(right - left >= cm(100)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
@@ -539,8 +536,7 @@ void main() {
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(
-        s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
+    expect(s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50), Result.success);
@@ -563,8 +559,7 @@ void main() {
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(
-        s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
+    expect(s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(10)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50), Result.success);
