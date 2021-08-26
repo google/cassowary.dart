@@ -77,7 +77,7 @@ class Expression extends EquationMember {
     }
 
     if (value is Expression) {
-      final newTerms = value.terms.fold(
+      final newTerms = value.terms.fold<List<Term>>(
         List<Term>.from(terms),
         (list, t) => list..add(Term(t.variable, -t.coefficient)),
       );
@@ -86,8 +86,8 @@ class Expression extends EquationMember {
         relation,
       );
     }
-    assert(false);
-    return null;
+
+    throw Exception();
   }
 
   @override
@@ -113,8 +113,7 @@ class Expression extends EquationMember {
         constant + m.constant,
       );
     }
-    assert(false);
-    return null;
+    throw Exception();
   }
 
   @override
@@ -144,8 +143,7 @@ class Expression extends EquationMember {
       }
       return Expression(copiedTerms, constant - m.constant);
     }
-    assert(false);
-    return null;
+    throw Exception();
   }
 
   @override
@@ -172,7 +170,7 @@ class Expression extends EquationMember {
     return _applyMultiplicand(1.0 / m.value);
   }
 
-  _Multiplication _findMulitplierAndMultiplicand(EquationMember m) {
+  _Multiplication? _findMulitplierAndMultiplicand(EquationMember m) {
     // At least one of the the two members must be constant for the resulting
     // expression to be linear
 
