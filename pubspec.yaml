@@ -4,8 +4,8 @@ description: An implementation of the Cassowary constraint solving algorithm in 
 author: Chromium Authors <flutter-dev@googlegroups.com>
 homepage: https://github.com/google/cassowary.dart/
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 dev_dependencies:
-  test: ^1.9.4
-  pedantic: ^1.8.0
-  matcher: ^0.12.6
+  lints: ^1.0.1
+  matcher: ^0.12.11
+  test: ^1.17.11

@@ -21,6 +21,7 @@ class _Symbol {
 
 class _Tag {
   _Tag(this.marker, this.other);
+
   _Tag.fromTag(_Tag tag)
       : marker = tag.marker,
         other = tag.other;
@@ -29,9 +30,9 @@ class _Tag {
 }
 
 class _EditInfo {
-  _Tag tag;
-  Constraint constraint;
-  double constant;
+  late _Tag tag;
+  late Constraint constraint;
+  late double constant;
 }
 
 bool _isValidNonRequiredPriority(double priority) =>
@@ -83,7 +84,7 @@ class _Row {
 
   void solveForSymbol(_Symbol symbol) {
     assert(cells.containsKey(symbol));
-    final coefficient = -1.0 / cells[symbol];
+    final coefficient = -1.0 / cells[symbol]!;
     cells.remove(symbol);
     constant *= coefficient;
     cells.forEach((s, v) => cells[s] = v * coefficient);
@@ -257,11 +258,9 @@ class Solver {
       _rows.remove(tag.marker);
     } else {
       final leaving = _leavingSymbolForMarkerSymbol(tag.marker);
-      assert(leaving != null);
 
       row = _rows.remove(leaving);
-      assert(row != null);
-      row.solveForSymbols(leaving, tag.marker);
+      row!.solveForSymbols(leaving, tag.marker);
       _substitute(tag.marker, row);
     }
 
@@ -339,7 +338,7 @@ class Solver {
     assert(result == Result.success);
 
     final info = _EditInfo()
-      ..tag = _constraints[constraint]
+      ..tag = _constraints[constraint]!
       ..constraint = constraint
       ..constant = 0.0;
 
@@ -362,7 +361,7 @@ class Solver {
   ///   already present in the solver.
   Result removeEditVariables(List<Variable> variables) {
     Result _applier(v) => removeEditVariable(v);
-    Result _undoer(v) => addEditVariable(v, _edits[v].constraint.priority);
+    Result _undoer(v) => addEditVariable(v, _edits[v]!.constraint.priority);
 
     return _bulkEdit(variables, _applier, _undoer);
   }
@@ -423,7 +422,7 @@ class Solver {
       return Result.unknownEditVariable;
     }
 
-    _suggestValueForEditInfoWithoutDualOptimization(_edits[variable], value);
+    _suggestValueForEditInfoWithoutDualOptimization(_edits[variable]!, value);
 
     return _dualOptimize();
   }
@@ -448,7 +447,7 @@ class Solver {
       final updatedValue = row == null ? 0.0 : row.constant;
 
       if (variable.applyUpdate(updatedValue) && variable.owner != null) {
-        final context = variable.owner.context;
+        final context = variable.owner!.context;
         if (context != null) {
           updates.add(context);
         }
@@ -459,11 +458,11 @@ class Solver {
   }
 
   Result _bulkEdit(
-    Iterable<dynamic> items,
+    Iterable<Object> items,
     _SolverBulkUpdate applier,
     _SolverBulkUpdate undoer,
   ) {
-    final applied = <dynamic>[];
+    final applied = <Object>[];
     var needsCleanup = false;
 
     var result = Result.success;
@@ -637,9 +636,8 @@ class Solver {
     var entering = _enteringSymbolForObjectiveRow(objective);
     while (entering.type != _SymbolType.invalid) {
       final leaving = _leavingSymbolForEnteringSymbol(entering);
-      assert(leaving != null);
 
-      final row = _rows.remove(leaving)..solveForSymbols(leaving, entering);
+      final row = _rows.remove(leaving)!..solveForSymbols(leaving, entering);
       _substitute(entering, row);
       _rows[entering] = row;
 
@@ -652,7 +650,7 @@ class Solver {
     final cells = objective.cells;
 
     for (final symbol in cells.keys) {
-      if (symbol.type != _SymbolType.dummy && cells[symbol] < 0.0) {
+      if (symbol.type != _SymbolType.dummy && cells[symbol]! < 0.0) {
         return symbol;
       }
     }
@@ -662,7 +660,7 @@ class Solver {
 
   _Symbol _leavingSymbolForEnteringSymbol(_Symbol entering) {
     var ratio = double.maxFinite;
-    _Symbol result;
+    _Symbol? result;
     _rows.forEach((symbol, row) {
       if (symbol.type != _SymbolType.external) {
         final temp = row.coefficientForSymbol(entering);
@@ -675,7 +673,7 @@ class Solver {
         }
       }
     });
-    return result;
+    return result!;
   }
 
   void _substitute(_Symbol symbol, _Row row) {
@@ -686,9 +684,7 @@ class Solver {
       }
     });
     _objective.substitute(symbol, row);
-    if (_artificial != null) {
-      _artificial.substitute(symbol, row);
-    }
+    _artificial.substitute(symbol, row);
   }
 
   _Symbol _anyPivotableSymbol(_Row row) {
@@ -723,7 +719,7 @@ class Solver {
     var r1 = double.maxFinite;
     var r2 = double.maxFinite;
 
-    _Symbol first, second, third;
+    _Symbol? first, second, third;
 
     _rows.forEach((symbol, row) {
       final c = row.coefficientForSymbol(marker);
@@ -747,7 +743,7 @@ class Solver {
       }
     });
 
-    return first ?? second ?? third;
+    return first ?? second ?? third!;
   }
 
   void _suggestValueForEditInfoWithoutDualOptimization(
@@ -778,7 +774,7 @@ class Solver {
     }
 
     for (final symbol in _rows.keys) {
-      final row = _rows[symbol];
+      final row = _rows[symbol]!;
       final coeff = row.coefficientForSymbol(info.tag.marker);
       if (coeff != 0.0 &&
           row.add(delta * coeff) < 0.0 &&
@@ -809,14 +805,14 @@ class Solver {
   }
 
   _Symbol _dualEnteringSymbolForRow(_Row row) {
-    _Symbol entering;
+    _Symbol? entering;
 
     var ratio = double.maxFinite;
 
     final rowCells = row.cells;
 
     for (final symbol in rowCells.keys) {
-      final value = rowCells[symbol];
+      final value = rowCells[symbol]!;
 
       if (value > 0.0 && symbol.type != _SymbolType.dummy) {
         final coeff = _objective.coefficientForSymbol(symbol);
