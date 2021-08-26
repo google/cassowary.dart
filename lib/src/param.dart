@@ -19,16 +19,16 @@ class Variable {
 
   /// An optional name given to the variable. This is useful in debugging
   /// [Solver] state.
-  String name;
+  late String name;
 
   /// Variables represent state inside the solver. This state is usually of
   /// interest to some entity outside the solver. Such entities can (optionally)
   /// associate themselves with these variables. This means that when solver
   /// is flushed, it is easy to obtain a reference to the entity the variable
   /// is associated with.
-  Param get owner => _owner;
+  Param? get owner => _owner;
 
-  Param _owner;
+  Param? _owner;
 
   /// Used by the [Solver] to apply updates to this variable. Only updated
   /// variables show up in [Solver] flush results.

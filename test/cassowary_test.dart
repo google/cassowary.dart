@@ -501,7 +501,7 @@ void main() {
     expect(s.addConstraint(c2), Result.success);
     expect(s.addConstraint(c3), Result.success);
 
-    expect(s.toString() != null, true);
+    expect(s.toString(), true);
   });
 
   test('solution_with_optimize', () {
