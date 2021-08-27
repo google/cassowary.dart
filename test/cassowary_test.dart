@@ -501,7 +501,29 @@ void main() {
     expect(s.addConstraint(c2), Result.success);
     expect(s.addConstraint(c3), Result.success);
 
-    expect(s.toString(), true);
+    expect(s.toString(), '''
+
+~~~~~~~~~ Objective
+0.0
+
+~~~~~~~~~ Tableau
+Instance of '_Symbol' | 0.01.0 * Instance of '_Symbol'-1.0 * Instance of '_Symbol'
+Instance of '_Symbol' | 0.01.0 * Instance of '_Symbol'
+Instance of '_Symbol' | -0.0-1.0 * Instance of '_Symbol'
+
+~~~~~~~~~ Infeasible
+
+~~~~~~~~~ Variables
+Instance of 'Variable' = Instance of '_Symbol'
+Instance of 'Variable' = Instance of '_Symbol'
+
+~~~~~~~~~ Edit Variables
+
+~~~~~~~~~ Constraints
++Instance of 'Variable'-Instance of 'Variable' >= 0  | priority = 1000000000.0 (required)
++Instance of 'Variable'-Instance of 'Variable' <= 0  | priority = 1000000000.0 (required)
++Instance of 'Variable'-Instance of 'Variable' == 0  | priority = 1000000000.0 (required)
+''');
   });
 
   test('solution_with_optimize', () {
