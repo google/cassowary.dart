@@ -408,8 +408,7 @@ void main() {
     expect(s.addConstraint(c), Result.success);
 
     expect(s.addEditVariable(mid.variable, 999), Result.success);
-    expect(
-        s.addEditVariable(mid.variable, 999), Result.duplicateEditVariable);
+    expect(s.addEditVariable(mid.variable, 999), Result.duplicateEditVariable);
     expect(s.removeEditVariable(mid.variable), Result.success);
     expect(s.removeEditVariable(mid.variable), Result.unknownEditVariable);
   });
@@ -437,8 +436,7 @@ void main() {
 
     final s = Solver();
 
-    expect(
-        s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
+    expect(s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
     expect(s.addConstraint(right - left >= cm(100)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
@@ -477,8 +475,7 @@ void main() {
 
     final s = Solver();
 
-    expect(
-        s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
+    expect(s.addConstraint((right + left).equals(mid * cm(2))), Result.success);
     expect(s.addConstraint(right - left >= cm(100)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
@@ -504,7 +501,29 @@ void main() {
     expect(s.addConstraint(c2), Result.success);
     expect(s.addConstraint(c3), Result.success);
 
-    expect(s.toString(), true);
+    expect(s.toString(), '''
+
+~~~~~~~~~ Objective
+0.0
+
+~~~~~~~~~ Tableau
+Instance of '_Symbol' | 0.01.0 * Instance of '_Symbol'-1.0 * Instance of '_Symbol'
+Instance of '_Symbol' | 0.01.0 * Instance of '_Symbol'
+Instance of '_Symbol' | -0.0-1.0 * Instance of '_Symbol'
+
+~~~~~~~~~ Infeasible
+
+~~~~~~~~~ Variables
+Instance of 'Variable' = Instance of '_Symbol'
+Instance of 'Variable' = Instance of '_Symbol'
+
+~~~~~~~~~ Edit Variables
+
+~~~~~~~~~ Constraints
++Instance of 'Variable'-Instance of 'Variable' >= 0  | priority = 1000000000.0 (required)
++Instance of 'Variable'-Instance of 'Variable' <= 0  | priority = 1000000000.0 (required)
++Instance of 'Variable'-Instance of 'Variable' == 0  | priority = 1000000000.0 (required)
+''');
   });
 
   test('solution_with_optimize', () {
@@ -539,8 +558,7 @@ void main() {
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(
-        s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
+    expect(s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(0)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50), Result.success);
@@ -563,8 +581,7 @@ void main() {
 
     expect(s.addEditVariable(mid.variable, Priority.strong), Result.success);
 
-    expect(
-        s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
+    expect(s.addConstraint((mid * cm(2)).equals(left + right)), Result.success);
     expect(s.addConstraint(left >= cm(10)), Result.success);
 
     expect(s.suggestValueForVariable(mid.variable, 50), Result.success);
