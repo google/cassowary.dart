@@ -186,6 +186,8 @@ class Solver {
 
     var subject = _chooseSubjectForRow(row, tag);
 
+    _constraints[constraint] = tag;
+    
     if (subject.type == _SymbolType.invalid && _allDummiesInRow(row)) {
       if (!_nearZero(row.constant)) {
         return Result.unsatisfiableConstraint;
@@ -203,8 +205,6 @@ class Solver {
       _substitute(subject, row);
       _rows[subject] = row;
     }
-
-    _constraints[constraint] = tag;
 
     return _optimizeObjectiveRow(_objective);
   }
