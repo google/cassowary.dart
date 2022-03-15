@@ -187,7 +187,7 @@ class Solver {
     var subject = _chooseSubjectForRow(row, tag);
 
     _constraints[constraint] = tag;
-    
+
     if (subject.type == _SymbolType.invalid && _allDummiesInRow(row)) {
       if (!_nearZero(row.constant)) {
         return Result.unsatisfiableConstraint;
@@ -541,7 +541,9 @@ class Solver {
           tag
             ..marker = errPlus
             ..other = errMinus;
-          row..insertSymbol(errPlus, -1)..insertSymbol(errMinus, 1);
+          row
+            ..insertSymbol(errPlus, -1)
+            ..insertSymbol(errMinus, 1);
           _objective
             ..insertSymbol(errPlus, constraint.priority)
             ..insertSymbol(errMinus, constraint.priority);
