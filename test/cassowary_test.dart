@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:test/test.dart';
-
 import 'package:cassowary/cassowary.dart';
-import 'package:matcher/matcher.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('variable', () {
@@ -38,53 +36,39 @@ void main() {
     final v2 = Param(10);
     final v3 = Param(22);
 
-    expect(v1 is Param, true);
-    expect(v1 + cm(20) is Expression, true);
-    expect(v1 + v2 is Expression, true);
-
     expect((v1 + v2).value, 20.0);
     expect((v1 - v2).value, 0.0);
 
-    expect((v1 + v2 + v3) is Expression, true);
     expect((v1 + v2 + v3).value, 42.0);
   });
 
   test('expression2', () {
     final e = Param(10) + cm(5);
     expect(e.value, 15.0);
-    expect(e is Expression, true);
 
     // Constant
-    expect((e + cm(2)) is Expression, true);
     expect((e + cm(2)).value, 17.0);
-    expect((e - cm(2)) is Expression, true);
     expect((e - cm(2)).value, 13.0);
 
     expect(e.value, 15.0);
 
     // Param
     final v = Param(2);
-    expect((e + v) is Expression, true);
     expect((e + v).value, 17.0);
-    expect((e - v) is Expression, true);
     expect((e - v).value, 13.0);
 
     expect(e.value, 15.0);
 
     // Term
     final t = Term(v.variable, 2);
-    expect((e + t) is Expression, true);
     expect((e + t).value, 19.0);
-    expect((e - t) is Expression, true);
     expect((e - t).value, 11.0);
 
     expect(e.value, 15.0);
 
     // Expression
     final e2 = Param(7) + Param(3);
-    expect((e + e2) is Expression, true);
     expect((e + e2).value, 25.0);
-    expect((e - e2) is Expression, true);
     expect((e - e2).value, 5.0);
 
     expect(e.value, 15.0);
@@ -95,30 +79,22 @@ void main() {
 
     // Constant
     final c = cm(2);
-    expect((t + c) is Expression, true);
     expect((t + c).value, 14.0);
-    expect((t - c) is Expression, true);
     expect((t - c).value, 10.0);
 
     // Variable
     final v = Param(2);
-    expect((t + v) is Expression, true);
     expect((t + v).value, 14.0);
-    expect((t - v) is Expression, true);
     expect((t - v).value, 10.0);
 
     // Term
     final t2 = Term(Variable(1), 2);
-    expect((t + t2) is Expression, true);
     expect((t + t2).value, 14.0);
-    expect((t - t2) is Expression, true);
     expect((t - t2).value, 10.0);
 
     // Expression
     final exp = Param(1) + cm(1);
-    expect((t + exp) is Expression, true);
     expect((t + exp).value, 14.0);
-    expect((t - exp) is Expression, true);
     expect((t - exp).value, 10.0);
   });
 
@@ -127,32 +103,24 @@ void main() {
 
     // Constant
     final c = cm(2);
-    expect((v + c) is Expression, true);
     expect((v + c).value, 5.0);
-    expect((v - c) is Expression, true);
     expect((v - c).value, 1.0);
 
     // Variable
     final v2 = Param(2);
-    expect((v + v2) is Expression, true);
     expect((v + v2).value, 5.0);
-    expect((v - v2) is Expression, true);
     expect((v - v2).value, 1.0);
 
     // Term
     final t2 = Term(Variable(1), 2);
-    expect((v + t2) is Expression, true);
     expect((v + t2).value, 5.0);
-    expect((v - t2) is Expression, true);
     expect((v - t2).value, 1.0);
 
     // Expression
     final exp = Param(1) + cm(1);
     expect(exp.terms.length, 1);
 
-    expect((v + exp) is Expression, true);
     expect((v + exp).value, 5.0);
-    expect((v - exp) is Expression, true);
     expect((v - exp).value, 1.0);
   });
 
@@ -161,40 +129,24 @@ void main() {
 
     // Constant
     final c2 = cm(2);
-    expect((c + c2) is Expression, true);
     expect((c + c2).value, 5.0);
-    expect((c - c2) is Expression, true);
     expect((c - c2).value, 1.0);
 
     // Variable
     final v2 = Param(2);
-    expect((c + v2) is Expression, true);
     expect((c + v2).value, 5.0);
-    expect((c - v2) is Expression, true);
     expect((c - v2).value, 1.0);
 
     // Term
     final t2 = Term(Variable(1), 2);
-    expect((c + t2) is Expression, true);
     expect((c + t2).value, 5.0);
-    expect((c - t2) is Expression, true);
     expect((c - t2).value, 1.0);
 
     // Expression
     final exp = Param(1) + cm(1);
 
-    expect((c + exp) is Expression, true);
     expect((c + exp).value, 5.0);
-    expect((c - exp) is Expression, true);
     expect((c - exp).value, 1.0);
-  });
-
-  test('constraint2', () {
-    final left = Param(10);
-    final right = Param(100);
-
-    final c = right - left >= cm(25);
-    expect(c is Constraint, true);
   });
 
   test('simple_multiplication', () {
@@ -238,17 +190,14 @@ void main() {
     final right = Param(10);
 
     final c1 = right - left >= cm(20);
-    expect(c1 is Constraint, true);
     expect(c1.expression.constant, -20.0);
     expect(c1.relation, Relation.greaterThanOrEqualTo);
 
     final c2 = (right - left).equals(cm(30));
-    expect(c2 is Constraint, true);
     expect(c2.expression.constant, -30.0);
     expect(c2.relation, Relation.equalTo);
 
     final c3 = right - left <= cm(30);
-    expect(c3 is Constraint, true);
     expect(c3.expression.constant, -30.0);
     expect(c3.relation, Relation.lessThanOrEqualTo);
   });
@@ -258,7 +207,6 @@ void main() {
     final right = Param(10);
 
     final c = (right - left >= cm(200)) | 750.0;
-    expect(c is Constraint, true);
     expect(c.expression.terms.length, 2);
     expect(c.expression.constant, -200.0);
     expect(c.priority, 750.0);
@@ -272,8 +220,6 @@ void main() {
 
     final c1 = right - left >= cm(200);
 
-    expect((right >= left) is Constraint, true);
-
     expect(s.addConstraint(c1), Result.success);
   });
 
@@ -282,25 +228,21 @@ void main() {
 
     // Constant
     final c1 = e >= cm(50);
-    expect(c1 is Constraint, true);
     expect(c1.expression.terms.length, 2);
     expect(c1.expression.constant, -50.0);
 
     // Variable
     final c2 = e >= Param(2);
-    expect(c2 is Constraint, true);
     expect(c2.expression.terms.length, 3);
     expect(c2.expression.constant, 0.0);
 
     // Term
     final c3 = e >= Term(Variable(2), 1);
-    expect(c3 is Constraint, true);
     expect(c3.expression.terms.length, 3);
     expect(c3.expression.constant, 0.0);
 
     // Expression
     final c4 = e >= Expression(<Term>[Term(Variable(2), 1)], 20);
-    expect(c4 is Constraint, true);
     expect(c4.expression.terms.length, 3);
     expect(c4.expression.constant, -20.0);
   });
@@ -308,27 +250,23 @@ void main() {
   test('constraint_complex_non_exprs', () {
     // Constant
     final c1 = cm(100) >= cm(50);
-    expect(c1 is Constraint, true);
     expect(c1.expression.terms.length, 0);
     expect(c1.expression.constant, 50.0);
 
     // Variable
     final c2 = Param(100) >= Param(2);
-    expect(c2 is Constraint, true);
     expect(c2.expression.terms.length, 2);
     expect(c2.expression.constant, 0.0);
 
     // Term
     final t = Term(Variable(100), 1);
     final c3 = t >= Term(Variable(2), 1);
-    expect(c3 is Constraint, true);
     expect(c3.expression.terms.length, 2);
     expect(c3.expression.constant, 0.0);
 
     // Expression
     final e = Expression(<Term>[t], 0);
     final c4 = e >= Expression(<Term>[Term(Variable(2), 1)], 20);
-    expect(c4 is Constraint, true);
     expect(c4.expression.terms.length, 2);
     expect(c4.expression.constant, -20.0);
   });
@@ -411,14 +349,6 @@ void main() {
     expect(s.addEditVariable(mid.variable, 999), Result.duplicateEditVariable);
     expect(s.removeEditVariable(mid.variable), Result.success);
     expect(s.removeEditVariable(mid.variable), Result.unknownEditVariable);
-  });
-
-  test('bug1', () {
-    final left = Param(0);
-    final right = Param(100);
-    final mid = Param(0);
-
-    expect(((left + right) >= (cm(2) * mid)) is Constraint, true);
   });
 
   test('single_item', () {
@@ -643,5 +573,18 @@ Instance of 'Variable' = Instance of '_Symbol'
         s.removeEditVariables(
             <Variable>[left.variable, right.variable, mid.variable]),
         Result.success);
+  });
+
+  test('remove_unsatisfiable_constraint', () {
+    final a = Param();
+    final b = Param();
+    final c1 = a >= cm(10);
+    final c2 = b <= cm(5);
+    final c3 = b >= a;
+    final solver = Solver();
+    solver.addConstraint(c1);
+    solver.addConstraint(c2);
+    expect(solver.addConstraint(c3), Result.unsatisfiableConstraint);
+    expect(solver.removeConstraint(c3), Result.success);
   });
 }

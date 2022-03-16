@@ -38,7 +38,9 @@ class Term extends EquationMember {
     final buffer = StringBuffer()..write(coefficient.sign > 0.0 ? '+' : '-');
 
     if (coefficient.abs() != 1.0) {
-      buffer..write(coefficient.abs())..write('*');
+      buffer
+        ..write(coefficient.abs())
+        ..write('*');
     }
 
     buffer.write(variable);

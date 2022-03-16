@@ -205,7 +205,9 @@ class Expression extends EquationMember {
     }
 
     if (constant != 0.0) {
-      buffer..write(constant.sign > 0.0 ? '+' : '-')..write(constant.abs());
+      buffer
+        ..write(constant.sign > 0.0 ? '+' : '-')
+        ..write(constant.abs());
     }
 
     return buffer.toString();
