@@ -36,7 +36,6 @@ void main() {
     final v2 = Param(10);
     final v3 = Param(22);
 
-
     expect((v1 + v2).value, 20.0);
     expect((v1 - v2).value, 0.0);
 
