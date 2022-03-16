@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:test/test.dart';
-
 import 'package:cassowary/cassowary.dart';
-import 'package:matcher/matcher.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('variable', () {
@@ -576,5 +574,18 @@ Instance of 'Variable' = Instance of '_Symbol'
         s.removeEditVariables(
             <Variable>[left.variable, right.variable, mid.variable]),
         Result.success);
+  });
+
+  test('remove_unsatisfiable_constraint', () {
+    final a = Param();
+    final b = Param();
+    final c1 = a >= cm(10);
+    final c2 = b <= cm(5);
+    final c3 = b >= a;
+    final solver = Solver();
+    solver.addConstraint(c1);
+    solver.addConstraint(c2);
+    expect(solver.addConstraint(c3), Result.unsatisfiableConstraint);
+    expect(solver.removeConstraint(c3), Result.success);
   });
 }
