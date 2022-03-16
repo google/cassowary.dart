@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.1
+ - Bug fix from [@romannep](https://github.com/romannep).
+
 ## 0.4.0
  - Null Safety
  - Add CI
