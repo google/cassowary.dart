@@ -1,5 +1,5 @@
 name: cassowary
-version: 0.4.1
+version: 0.4.2
 description: An implementation of the Cassowary constraint solving algorithm in Dart.
 homepage: https://github.com/google/cassowary.dart/
 environment:
