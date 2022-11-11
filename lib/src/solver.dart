@@ -152,10 +152,10 @@ class Solver {
   ///   constraints at the same priority. Lower the priority of these
   ///   constraints and try again.
   Result addConstraints(List<Constraint> constraints) {
-    Result _applier(c) => addConstraint(c);
-    Result _undoer(c) => removeConstraint(c);
+    Result applier(c) => addConstraint(c);
+    Result undoer(c) => removeConstraint(c);
 
-    return _bulkEdit(constraints, _applier, _undoer);
+    return _bulkEdit(constraints, applier, undoer);
   }
 
   /// Attempts to add an individual [Constraint] to the solver.
@@ -225,10 +225,10 @@ class Solver {
   /// * [Result.unknownConstraint]: One or more constraints in the list were
   ///   not in the solver. So there was nothing to remove.
   Result removeConstraints(List<Constraint> constraints) {
-    Result _applier(c) => removeConstraint(c);
-    Result _undoer(c) => addConstraint(c);
+    Result applier(c) => removeConstraint(c);
+    Result undoer(c) => addConstraint(c);
 
-    return _bulkEdit(constraints, _applier, _undoer);
+    return _bulkEdit(constraints, applier, undoer);
   }
 
   /// Attempt to remove an individual [Constraint] from the solver.
@@ -293,10 +293,10 @@ class Solver {
   ///   allows the solver to check for satisfiability of the constraint (w.r.t
   ///   other constraints at [Priority.required]) and check for duplicates.
   Result addEditVariables(List<Variable> variables, double priority) {
-    Result _applier(v) => addEditVariable(v, priority);
-    Result _undoer(v) => removeEditVariable(v);
+    Result applier(v) => addEditVariable(v, priority);
+    Result undoer(v) => removeEditVariable(v);
 
-    return _bulkEdit(variables, _applier, _undoer);
+    return _bulkEdit(variables, applier, undoer);
   }
 
   /// Attempt to add a single edit [Variable] to the [Solver] at the given
@@ -360,10 +360,10 @@ class Solver {
   /// * [Result.unknownEditVariable]: One of more edit variables were not
   ///   already present in the solver.
   Result removeEditVariables(List<Variable> variables) {
-    Result _applier(v) => removeEditVariable(v);
-    Result _undoer(v) => addEditVariable(v, _edits[v]!.constraint.priority);
+    Result applier(v) => removeEditVariable(v);
+    Result undoer(v) => addEditVariable(v, _edits[v]!.constraint.priority);
 
-    return _bulkEdit(variables, _applier, _undoer);
+    return _bulkEdit(variables, applier, undoer);
   }
 
   /// Attempt to remove the specified edit [Variable] from the solver.
