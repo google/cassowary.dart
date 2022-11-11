@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.4
+## 0.4.2
  - Update dependencies
 
 ## 0.4.1
