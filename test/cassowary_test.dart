@@ -386,16 +386,9 @@ void main() {
 
     final c = (left >= cm(0));
 
-    expect(
-        s.addConstraints(<Constraint>[
-          (left + right).equals(cm(2) * mid),
-          (right - left >= cm(100)),
-          c
-        ]),
-        Result.success);
+    expect(s.addConstraints(<Constraint>[(left + right).equals(cm(2) * mid), (right - left >= cm(100)), c]), Result.success);
 
-    expect(s.addConstraints(<Constraint>[(right >= cm(-20)), c]),
-        Result.duplicateConstraint);
+    expect(s.addConstraints(<Constraint>[(right >= cm(-20)), c]), Result.duplicateConstraint);
   });
 
   test('edit_constraints', () {
@@ -544,10 +537,7 @@ Instance of 'Variable' = Instance of '_Symbol'
     final right = Param(100);
     final mid = Param(0);
 
-    expect(
-        s.addEditVariables(
-            <Variable>[left.variable, right.variable, mid.variable], 999),
-        Result.success);
+    expect(s.addEditVariables(<Variable>[left.variable, right.variable, mid.variable], 999), Result.success);
   });
 
   test('bulk_remove_constraints_and_variables', () {
@@ -557,10 +547,7 @@ Instance of 'Variable' = Instance of '_Symbol'
     final right = Param(100);
     final mid = Param(0);
 
-    expect(
-        s.addEditVariables(
-            <Variable>[left.variable, right.variable, mid.variable], 999),
-        Result.success);
+    expect(s.addEditVariables(<Variable>[left.variable, right.variable, mid.variable], 999), Result.success);
 
     final c1 = left <= mid;
     final c2 = mid <= right;
@@ -569,10 +556,7 @@ Instance of 'Variable' = Instance of '_Symbol'
 
     expect(s.removeConstraints(<Constraint>[c1, c2]), Result.success);
 
-    expect(
-        s.removeEditVariables(
-            <Variable>[left.variable, right.variable, mid.variable]),
-        Result.success);
+    expect(s.removeEditVariables(<Variable>[left.variable, right.variable, mid.variable]), Result.success);
   });
 
   test('remove_unsatisfiable_constraint', () {
@@ -586,5 +570,14 @@ Instance of 'Variable' = Instance of '_Symbol'
     solver.addConstraint(c2);
     expect(solver.addConstraint(c3), Result.unsatisfiableConstraint);
     expect(solver.removeConstraint(c3), Result.success);
+  });
+
+  test('to_string_returns_variable_name', () {
+    final a = Param()..name = 'a';
+    final b = Param()..name = 'b';
+
+    expect(a.toString(), 'a');
+    expect(b.toString(), 'b');
+    expect(a.equals(b).toString(), startsWith('+a-b == 0'));
   });
 }

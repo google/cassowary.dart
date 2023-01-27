@@ -19,7 +19,7 @@ class Variable {
 
   /// An optional name given to the variable. This is useful in debugging
   /// [Solver] state.
-  late String name;
+  String? name;
 
   /// Variables represent state inside the solver. This state is usually of
   /// interest to some entity outside the solver. Such entities can (optionally)
@@ -37,6 +37,9 @@ class Variable {
     value = updated;
     return res;
   }
+
+  @override
+  String toString() => name ?? super.toString();
 }
 
 /// A [Param] wraps a [Variable] and makes it suitable to be used in an
@@ -70,10 +73,13 @@ class Param extends EquationMember {
   double get value => variable.value;
 
   /// The name of the [Variable] associated with this [Param].
-  String get name => variable.name;
+  String? get name => variable.name;
 
   /// Set the name of the [Variable] associated with this [Param].
-  set name(String name) {
+  set name(String? name) {
     variable.name = name;
   }
+
+  @override
+  String toString() => name ?? super.toString();
 }
