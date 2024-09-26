@@ -10,7 +10,7 @@
 ///
 /// * <https://en.wikipedia.org/wiki/Cassowary_(software)>
 /// * <https://constraints.cs.washington.edu/solvers/cassowary-tochi.pdf>
-library cassowary;
+library;
 
 export 'src/constant_member.dart';
 export 'src/constraint.dart';
